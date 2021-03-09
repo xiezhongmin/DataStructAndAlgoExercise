@@ -59,7 +59,8 @@ public class ArrayList <E> extends AbstractList<E> {
 			elements[i - 1] = elements[i];
 		}
 		elements[--size] = null;
-		
+		// 缩容
+		trim();
 		return old;
 	}
 	
@@ -104,6 +105,23 @@ public class ArrayList <E> extends AbstractList<E> {
 		
 		elements = newElements;
 		System.out.println(oldCapacity + "扩容为" + newCapacity);
+	}
+
+	// 缩容
+	private void trim() {
+		int oldCapacity = elements.length;
+		// 注意：扩容倍数 * 缩容倍数 = 1 会导致复杂度震荡
+		int newCapacity = oldCapacity >> 1; // 新容量为旧容量的1/2
+		// 剩余空间不多或者小于默认容量不需要缩容
+		if (size >= newCapacity || oldCapacity <= DEFAULT_CAPACITY) return;
+
+		E[] newElements = (E[]) new Object[newCapacity];
+		for (int i = 0; i < size; i++) {
+			newElements[i] = elements[i];
+		}
+
+		elements = newElements;
+		System.out.println(oldCapacity + "缩容为" + newCapacity);
 	}
 	
 	@Override
