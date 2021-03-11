@@ -1,31 +1,38 @@
 package _03_链表;
 
+import _00_utils.Asserts;
+
 public class Main {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		
-		// 测试链表增删改查
-		List<Integer> list1 = new LinkedList<Integer>();
-		list1.add(1);
-		list1.add(2);
-		list1.add(3);
-		list1.add(4);
-		list1.add(5);
-        list1.add(0, 10);
-        list1.add(3, 33);
-        list1.remove(0);
-		System.out.println(list1 + "\n");
 
-		// 测试ArrayList扩容与缩容
-		List<Integer> list2 = new ArrayList<Integer>();
-		for (int i = 0; i < 50; i++) {
-			list2.add(i);
-		}
-		for (int i = 0; i < 50; i++) {
-			list2.remove(0);
-		}
-		System.out.println(list2);
+		testList(new ArrayList<>());
+		testList(new LinkedList<>());
+	}
+
+	static void testList(List<Integer> list) {
+		list.add(11);
+		list.add(22);
+		list.add(33);
+		list.add(44);
+
+		list.add(0, 55); // [55, 11, 22, 33, 44]
+		list.add(2, 66); // [55, 11, 66, 22, 33, 44]
+		list.add(list.size(), 77); // [55, 11, 66, 22, 33, 44, 77]
+
+		list.remove(0); // [11, 66, 22, 33, 44, 77]
+		list.remove(2); // [11, 66, 33, 44, 77]
+		list.remove(list.size() - 1); // [11, 66, 33, 44]
+
+		Asserts.test(list.indexOf(44) == 3);
+		Asserts.test(list.indexOf(22) == List.ELEMENT_NOT_FOUND);
+		Asserts.test(list.contains(33));
+		Asserts.test(list.get(0) == 11);
+		Asserts.test(list.get(1) == 66);
+		Asserts.test(list.get(list.size() - 1) == 44);
+
+		System.out.println(list);
 	}
 
 }

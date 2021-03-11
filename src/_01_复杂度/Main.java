@@ -1,5 +1,6 @@
 package _01_复杂度;
-import _01_复杂度.TimeTool.Task;
+import _00_utils.TimeUtil;
+import _00_utils.TimeUtil.Task;
 
 public class Main {
 
@@ -47,19 +48,19 @@ public class Main {
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		TimeTool.check("fib1", new Task() {
+		TimeUtil.check("fib1", new Task() {
 			public void execute() {
 				System.out.println(fib1(42));
 			}
 		});
 		
-		TimeTool.check("fib2", new Task() {
+		TimeUtil.check("fib2", new Task() {
 			public void execute() {
 				System.out.println(fib2(42));
 			}
 		});
 
-		TimeTool.check("fib3", new Task() {
+		TimeUtil.check("fib3", new Task() {
 			public void execute() {
 				System.out.println(fib3(42));
 			}

@@ -1,9 +1,9 @@
-package _01_复杂度;
+package _00_utils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class TimeTool {
+public class TimeUtil {
 	private static final SimpleDateFormat fmt = new SimpleDateFormat("HH:mm:ss.SSS");
 
 	public interface Task {

@@ -4,7 +4,7 @@ package _03_链表;
 public class ArrayList <E> extends AbstractList<E> {
 	private E[] elements;
 	private static final int DEFAULT_CAPACITY = 10;
-	
+
 	// 构造方法
 	public ArrayList(int capacity) {
 		capacity = Math.max(capacity, DEFAULT_CAPACITY);
@@ -86,7 +86,14 @@ public class ArrayList <E> extends AbstractList<E> {
 	// 清除所有元素
 	@Override
 	public void clear() {
+		for (int i = 0; i < size; i++) {
+			elements[i] = null;
+		}
 		size = 0;
+
+		if (elements != null && elements.length > DEFAULT_CAPACITY) {
+			elements = (E[]) new Object[DEFAULT_CAPACITY];
+		}
 	}
 	
 	// 保证要有capacity的容量
