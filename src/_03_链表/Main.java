@@ -10,6 +10,7 @@ public class Main {
 		testList(new ArrayList<>());
 		testList(new LinkedList<>());
 		testList(new SingleCircleLinkedList<>());
+		testList(new CircleLinkedList<>());
 	}
 
 	static void testList(List<Integer> list) {
