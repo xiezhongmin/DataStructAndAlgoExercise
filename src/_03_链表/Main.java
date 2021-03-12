@@ -9,6 +9,7 @@ public class Main {
 
 		testList(new ArrayList<>());
 		testList(new LinkedList<>());
+		testList(new SingleCircleLinkedList<>());
 	}
 
 	static void testList(List<Integer> list) {

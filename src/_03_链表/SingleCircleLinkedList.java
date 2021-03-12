@@ -1,6 +1,6 @@
 package _03_链表;
 
-public class SingleLinkedList<E> extends AbstractList<E> {
+public class SingleCircleLinkedList<E> extends AbstractList<E> {
 	private Node<E> first;
 	
 	private static class Node<E> {
@@ -9,6 +9,14 @@ public class SingleLinkedList<E> extends AbstractList<E> {
 		public Node(E element, Node<E> next) {
 			this.element = element;
 			this.next = next;
+		}
+
+		@Override
+		public String toString() {
+			return "{" +
+					"element=" + element +
+					", next=" + next.element +
+					'}';
 		}
 	}
 
@@ -33,8 +41,14 @@ public class SingleLinkedList<E> extends AbstractList<E> {
 		// TODO Auto-generated method stub
 		rangeCheckForAdd(index);
 
+		// 环形单列表：add方法 只需要在添加头节点时，让尾节点指向头节点
 		if (index == 0) {
-			first = new Node<E>(element, first);
+			// 注意：此处有个坑， 如果提前赋值first节点， 那么 node(size - 1) 拿到的就不是最后一个节点了
+			Node<E> oldFirst = first;
+			Node<E> newFirst = new Node<E>(element, first);
+			Node<E> last = size == 0 ? newFirst : node(size - 1);
+			last.next = first;
+			first = newFirst;
 		} else {
 			// 获取前一个节点
 			Node<E> prev = node(index - 1);
@@ -48,9 +62,17 @@ public class SingleLinkedList<E> extends AbstractList<E> {
 		// TODO Auto-generated method stub
 		rangeCheck(index);
 
+		// 环形单列表：remove方法 只需要在移除头节点时，让尾节点指向头节点的下一个节点
 		Node<E> node = first;
 		if (index == 0) {
-			first = first.next;
+			// 注意：要先拿出尾节点
+			if (size == 1) { // 需要处理边界值 size == 1 的情况
+				first = null;
+			} else {
+				Node<E> last = node(size - 1);
+				first = first.next;
+				last.next = first;
+			}
 		} else {
 			// 获取前一个节点
 			Node<E> prev = node(index - 1);
@@ -111,7 +133,7 @@ public class SingleLinkedList<E> extends AbstractList<E> {
 				string.append(", ");
 			}
 			
-			string.append(node.element);
+			string.append(node);
 			
 			node = node.next;
 		}
