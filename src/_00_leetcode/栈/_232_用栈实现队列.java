@@ -1,4 +1,4 @@
-package _00_leetcode.队列;
+package _00_leetcode.栈;
 
 import java.util.Stack;
 
