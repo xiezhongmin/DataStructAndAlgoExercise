@@ -93,8 +93,10 @@ public class ArrayList <E> extends AbstractList<E> {
 		for (int i = 0; i < size; i++) {
 			elements[i] = null;
 		}
+
 		size = 0;
 
+		// 有必要时进行缩容(重置为初始容量)
 		if (elements != null && elements.length > DEFAULT_CAPACITY) {
 			elements = (E[]) new Object[DEFAULT_CAPACITY];
 		}
@@ -104,7 +106,7 @@ public class ArrayList <E> extends AbstractList<E> {
 	public void ensureCapacity(int capacity) {
 		int oldCapacity = elements.length;
 		// 空间足够不需要扩容
-		if (oldCapacity >= capacity) {  return; }
+		if (oldCapacity >= capacity) return;
 		
 		// 新容量为旧容量的1.5倍
 		int newCapacity = oldCapacity + (oldCapacity >> 1);

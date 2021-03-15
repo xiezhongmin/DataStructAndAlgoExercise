@@ -1,13 +1,10 @@
 package _05_队列;
 
-import java.util.Arrays;
-
 /**
- * 循环队列
- * 其实队列底层也可以使用动态数组实现，并且各项接口也可以优化到 O(1) 的时间复杂度
+ * 循环双端队列
  * 动态数组 + 队头下标
  */
-public class CircleQueue<E> {
+public class CircleDeque<E> {
     private int front;
     private E[] elements;
     private int size;
@@ -17,13 +14,13 @@ public class CircleQueue<E> {
      * 构造方法 + capacity
      * @param capacity
      */
-    public CircleQueue(int capacity) {
+    public CircleDeque(int capacity) {
         int newCapacity = Math.max(capacity, DEFAULT_CAPACITY);
         elements = (E[]) new Object[newCapacity];
     }
 
     // 构造方法
-    public CircleQueue() { this(DEFAULT_CAPACITY); }
+    public CircleDeque() { this(DEFAULT_CAPACITY); }
 
     public int size() { return size; }
 
@@ -37,16 +34,16 @@ public class CircleQueue<E> {
         size = 0;
     }
 
-    // 入队
-    public void enQueue(E element) {
+    // 从队尾入队
+    public void enQueueRear(E element) {
         ensureCapacity(size + 1);
 
         elements[circleIndex(size)] = element;
         size++;
     }
 
-    // 出队
-    public E deQueue() {
+    // 从队头出队
+    public E deQueueFront() {
         E element = elements[front];
         elements[front] = null;
         // front 前进一位
@@ -55,9 +52,32 @@ public class CircleQueue<E> {
         return element;
     }
 
-    // 获取队头
+    // 从队头入队
+    public void enQueueFront(E element) {
+        ensureCapacity(size + 1);
+
+        front = circleIndex(-1);
+        elements[front] = element;
+        size++;
+    }
+
+    // 从队尾出队
+    public E deQueueRear() {
+        int rearIndex = circleIndex(size - 1);
+        E element = elements[rearIndex];
+        elements[rearIndex] = null;
+        size--;
+        return element;
+    }
+
+    // 获取队列的头元素
     public E front() {
         return elements[front];
+    }
+
+    // 获取队列的尾元素
+    public E rear() {
+        return elements[circleIndex(size - 1)];
     }
 
     /**
@@ -67,6 +87,7 @@ public class CircleQueue<E> {
      */
     private int circleIndex(int index) {
         index += front;
+        if (index < 0) return index + elements.length;
         // 为了避免使用乘*、除/、模%、浮点数运算，效率低 此处可以使用%运算符优化
         // 队列%运算符满足 n%m 等价于 n – (m > n ? 0 : m) 的前提条件：n < 2m
         return index - (index >= elements.length ? elements.length : 0); // (front + index) % elements.length;

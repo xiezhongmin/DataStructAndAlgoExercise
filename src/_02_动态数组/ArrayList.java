@@ -117,7 +117,7 @@ public class ArrayList <E> {
 	public void ensureCapacity(int capacity) {
 		int oldCapacity = elements.length;
 		// 空间足够不需要扩容
-		if (oldCapacity >= capacity) {  return; }
+		if (oldCapacity >= capacity) return;
 		
 		// 新容量为旧容量的1.5倍
 		int newCapacity = oldCapacity + (oldCapacity >> 1);

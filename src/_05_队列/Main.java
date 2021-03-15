@@ -5,6 +5,7 @@ public class Main {
         testQueue();
         testDeque();
         testCircleQueue();
+        testCircleDeque();
     }
 
     static void testQueue() {
@@ -37,7 +38,7 @@ public class Main {
         System.out.println("-------------------- 此处是方法分割线 --------------------");
     }
 
-    static void  testCircleQueue() {
+    static void testCircleQueue() {
         CircleQueue<Integer> queue = new CircleQueue<Integer>();
         // 0 1 2 3 4 5 6 7 8 9
         for (int i = 0; i < 10; i++) {
@@ -56,6 +57,32 @@ public class Main {
             System.out.println(queue.deQueue());
         }
         System.out.println(queue);
+
+        System.out.println("-------------------- 此处是方法分割线 --------------------");
+    }
+
+    static void testCircleDeque() {
+        CircleDeque<Integer> queue = new CircleDeque<>();
+
+        // 头 8 7 6  5 4 3 2 1  100 101 102 103 104 105 106 107 108 109 null null 10 9 尾
+        for (int i = 0; i < 10; i++) {
+            queue.enQueueFront(i + 1);
+            queue.enQueueRear(i + 100);
+        }
+
+        // 头 null 7 6  5 4 3 2 1  100 101 102 103 104 105 106 null null null null null null null 尾
+        for (int i = 0; i < 3; i++) {
+            queue.deQueueFront();
+            queue.deQueueRear();
+        }
+
+        // 头 11 7 6  5 4 3 2 1  100 101 102 103 104 105 106 null null null null null null 12 尾
+        queue.enQueueFront(11);
+        queue.enQueueFront(12);
+        System.out.println(queue);
+        while (!queue.isEmpty()) {
+            System.out.println(queue.deQueueFront());
+        }
 
         System.out.println("-------------------- 此处是方法分割线 --------------------");
     }
