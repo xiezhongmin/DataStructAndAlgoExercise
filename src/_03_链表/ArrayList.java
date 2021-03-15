@@ -5,12 +5,16 @@ public class ArrayList <E> extends AbstractList<E> {
 	private E[] elements;
 	private static final int DEFAULT_CAPACITY = 10;
 
-	// 构造方法
+	/**
+	 * 构造方法 + capacity
+	 * @param capacity
+	 */
 	public ArrayList(int capacity) {
-		capacity = Math.max(capacity, DEFAULT_CAPACITY);
-		elements = (E[]) new Object[capacity];
+		int newCapacity = Math.max(capacity, DEFAULT_CAPACITY);
+		elements = (E[]) new Object[newCapacity];
 	}
-	
+
+	// 构造方法
 	public ArrayList() {
 		this(DEFAULT_CAPACITY);
 	}
@@ -99,9 +103,8 @@ public class ArrayList <E> extends AbstractList<E> {
 	// 保证要有capacity的容量
 	public void ensureCapacity(int capacity) {
 		int oldCapacity = elements.length;
-		if (oldCapacity >= capacity) { // 空间足够不需要扩容
-			return;
-		}
+		// 空间足够不需要扩容
+		if (oldCapacity >= capacity) {  return; }
 		
 		// 新容量为旧容量的1.5倍
 		int newCapacity = oldCapacity + (oldCapacity >> 1);
