@@ -43,12 +43,12 @@ public class _141_环形链表 {
     public static boolean hasCycle2(ListNode head) {
         if (head == null || head.next == null) return false;
 
-        ListNode flow = head; // 慢指针
+        ListNode slow = head; // 慢指针
         ListNode fast = head.next; // 快指针
         while (fast != null && fast.next != null) {
-            flow = flow.next; // 慢指针前进一步
+            slow = slow.next; // 慢指针前进一步
             fast = fast.next.next; // 快指针前进两步
-            if (fast == flow) return true; // 相遇了，有环
+            if (fast == slow) return true; // 相遇了，有环
         }
 
         return false;

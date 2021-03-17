@@ -37,13 +37,13 @@ public class _876_链表的中间结点 {
     public static ListNode middleNode2(ListNode head) {
         if (head == null || head.next == null) return head;
 
-        ListNode flow = head; // 慢指针
+        ListNode slow = head; // 慢指针
         ListNode fast = head; // 快指针
         while (fast != null && fast.next != null) {
             fast = fast.next.next;
-            flow = flow.next;
+            slow = slow.next;
         }
-        return flow;
+        return slow;
     }
 
     public static void main(String[] args) {

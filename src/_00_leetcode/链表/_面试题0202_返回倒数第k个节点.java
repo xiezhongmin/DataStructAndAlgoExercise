@@ -34,16 +34,16 @@ public class _面试题0202_返回倒数第k个节点 {
     // 快慢指针
     public static int kthToLast3(ListNode head, int k) {
         if (head.next == null) return head.val;
-        ListNode flow = head; // 慢指针
+        ListNode slow = head; // 慢指针
         ListNode fast = head; // 快指针
         // 快指针先走k步
         while (k-- > 1) { fast = fast.next; }
         // 快指针 与 慢指针同时走， 当快指针到达终点时 慢指针的值就是返回的值
         while (fast != null && fast.next != null) {
             fast = fast.next;
-            flow = flow.next;
+            slow = slow.next;
         }
-        return flow.val;
+        return slow.val;
     }
 
     public static void main(String[] args) {
