@@ -3,6 +3,8 @@ package _06_二叉搜索树;
 import _00_utils.printer.BinaryTreeInfo;
 
 import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * 二叉搜索树是二叉树的一种，是应用非常广泛的一种二叉树，英文简称为BST
@@ -22,7 +24,7 @@ public class BinarySearchTree<E> implements BinaryTreeInfo {
     private int size;
     private Node root;
     private Comparator comparator;
-    
+
     private class Node<E> {
         E element;
         Node parent;
@@ -95,11 +97,81 @@ public class BinarySearchTree<E> implements BinaryTreeInfo {
         return false;
     }
 
+    // 二叉树的遍历：
+    // 1.前序遍历（Preorder Traversal),   顺序：根节点、前序遍历左子树、前序遍历右子树
+    // 2.中序遍历（Inorder Traversal),    顺序：中序遍历左子树、根节点、中序遍历右子, 二叉搜索树的中序遍历结果是升序或者降序的
+    // 3.后序遍历（Postorder Traversal)   顺序：后序遍历左子树、后序遍历右子树、根节
+    // 4.层序遍历（Level Order Traversal) 顺序：从上到下、从左到右依次访问每一个节点
+
+    // 1.前序遍历（Preorder Traversal)
+    public void preorderTraversal() {
+        preorderTraversal(root);
+    }
+
+    public void preorderTraversal(Node node) {
+        if (node == null) return;
+
+        System.out.println(node.element);
+        preorderTraversal(node.left);
+        preorderTraversal(node.right);
+    }
+
+    // 2.中序遍历（Inorder Traversal)
+    public void inorderTraversal() {
+        inorderTraversal(root);
+    }
+
+    public void inorderTraversal(Node node) {
+        if (node == null) return;
+
+        preorderTraversal(node.left);
+        System.out.println(node.element);
+        preorderTraversal(node.right);
+    }
+
+    // 3.后序遍历（Postorder Traversal)
+    public void postorderTraversal() {
+        postorderTraversal(root);
+    }
+
+    public void postorderTraversal(Node node) {
+        if (node == null) return;
+
+        postorderTraversal(node.left);
+        postorderTraversal(node.right);
+        System.out.println(node.element);
+    }
+
+    // 4.层序遍历（Level Order Traversal)
+    public void levelOrderTraversal() {
+        if (size == 0) return;
+
+        // 思路
+        // 1.将根节点入队
+        // 2.循环一下操作直到队列为空：
+        // 将队头节点 A 出队，进行访问
+        // 将 A 的左子节点入队
+        // 将 A 的右子节点入队
+        Queue<Node> queue = new LinkedList<>();
+        queue.offer(root);
+
+        while (!queue.isEmpty()) {
+            Node node = queue.poll();
+            System.out.println(node.element);
+            if (node.left != null) {
+                queue.offer(node.left);
+            }
+            if (node.right != null) {
+                queue.offer(node.right);
+            }
+        }
+    }
+
     private int compare(E e1, E e2) {
-        if (comparator != null) {
+        if (comparator != null) { // 外界传入一个 Comparator 自定义比较方案
             return comparator.compare(e1, e2);
         }
-        return ((Comparable<E>)e1).compareTo(e2);
+        return ((Comparable<E>)e1).compareTo(e2); // 如果没有传入Comparator，强制认定元素实现了 Comparable 接口
     }
 
     private void elementNotNullCheck(E element) {
