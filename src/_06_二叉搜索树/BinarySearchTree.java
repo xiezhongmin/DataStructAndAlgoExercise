@@ -22,16 +22,16 @@ import java.util.Queue;
  */
 public class BinarySearchTree<E> implements BinaryTreeInfo {
     private int size;
-    private Node root;
-    private Comparator comparator;
+    private Node<E> root;
+    private Comparator<E> comparator;
 
-    private class Node<E> {
+    private static class Node<E> {
         E element;
-        Node parent;
-        Node left;
-        Node right;
+        Node<E> parent;
+        Node<E> left;
+        Node<E> right;
 
-        Node(E element, Node parent) {
+        Node(E element, Node<E> parent) {
             this.element = element;
             this.parent = parent;
         }
@@ -43,7 +43,7 @@ public class BinarySearchTree<E> implements BinaryTreeInfo {
     }
 
     // 构造方法 + 比较器
-    public BinarySearchTree(Comparator comparator) {
+    public BinarySearchTree(Comparator<E> comparator) {
         this.comparator = comparator;
     }
 
@@ -59,7 +59,7 @@ public class BinarySearchTree<E> implements BinaryTreeInfo {
         elementNotNullCheck(element);
 
         if (root == null) { // 第一次添加
-            root = new Node(element, null);
+            root = new Node<E>(element, null);
         } else { // 后续添加
             // 思路步骤：
             // 1.找到父节点 parent
@@ -67,10 +67,10 @@ public class BinarySearchTree<E> implements BinaryTreeInfo {
             // 3.parent.left = node 或者 parent.right = node
 
             int cmp = 0;
-            Node node = root;
-            Node parent = root;
+            Node<E> node = root;
+            Node<E> parent = root;
             while (node != null) {
-                cmp = compare(element, (E)node.element); // 保存比较结果
+                cmp = compare(element, node.element); // 保存比较结果
                 parent = node; // 保存父节点
 
                 if (cmp > 0) { // 如果比父节点大，继续往右边找
@@ -83,8 +83,8 @@ public class BinarySearchTree<E> implements BinaryTreeInfo {
                 }
             }
 
-            if (cmp > 0) parent.right = new Node(element, parent); // 大的放右边
-            else parent.left = new Node(element, parent); // 小的放左边
+            if (cmp > 0) parent.right = new Node<E>(element, parent); // 大的放右边
+            else parent.left = new Node<E>(element, parent); // 小的放左边
         }
         size++;
     }
@@ -108,7 +108,7 @@ public class BinarySearchTree<E> implements BinaryTreeInfo {
         preorderTraversal(root);
     }
 
-    public void preorderTraversal(Node node) {
+    public void preorderTraversal(Node<E> node) {
         if (node == null) return;
 
         System.out.println(node.element);
@@ -121,12 +121,12 @@ public class BinarySearchTree<E> implements BinaryTreeInfo {
         inorderTraversal(root);
     }
 
-    public void inorderTraversal(Node node) {
+    public void inorderTraversal(Node<E> node) {
         if (node == null) return;
 
-        preorderTraversal(node.left);
+        inorderTraversal(node.left);
         System.out.println(node.element);
-        preorderTraversal(node.right);
+        inorderTraversal(node.right);
     }
 
     // 3.后序遍历（Postorder Traversal)
@@ -134,7 +134,7 @@ public class BinarySearchTree<E> implements BinaryTreeInfo {
         postorderTraversal(root);
     }
 
-    public void postorderTraversal(Node node) {
+    public void postorderTraversal(Node<E> node) {
         if (node == null) return;
 
         postorderTraversal(node.left);
@@ -152,11 +152,11 @@ public class BinarySearchTree<E> implements BinaryTreeInfo {
         // 将队头节点 A 出队，进行访问
         // 将 A 的左子节点入队
         // 将 A 的右子节点入队
-        Queue<Node> queue = new LinkedList<>();
+        Queue<Node<E>> queue = new LinkedList<>();
         queue.offer(root);
 
         while (!queue.isEmpty()) {
-            Node node = queue.poll();
+            Node<E> node = queue.poll();
             System.out.println(node.element);
             if (node.left != null) {
                 queue.offer(node.left);
@@ -187,17 +187,17 @@ public class BinarySearchTree<E> implements BinaryTreeInfo {
 
     @Override
     public Object left(Object node) {
-        return ((Node)node).left;
+        return ((Node<E>)node).left;
     }
 
     @Override
     public Object right(Object node) {
-        return ((Node)node).right;
+        return ((Node<E>)node).right;
     }
 
     @Override
     public Object string(Object node) {
-        String parentStr = ((Node)node).parent == null ? "null" : ((Node)node).parent.element.toString();
-        return  ((Node)node).element + "(p:" + parentStr + ")";
+        String parentStr = ((Node<E>)node).parent == null ? "null" : ((Node<E>)node).parent.element.toString();
+        return  ((Node<E>)node).element + "(p:" + parentStr + ")";
     }
 }

@@ -8,6 +8,7 @@ public class Main {
     public static void main(String[] args) {
         testIntegerTree();
         testPersonTree();
+        testTraversalTree();
     }
 
     static void testIntegerTree() {
@@ -53,5 +54,35 @@ public class Main {
         BinaryTrees.println(bst2);
 
         System.out.println("-------------------- 此处是方法分割线 --------------------");
+    }
+
+    static void testTraversalTree() {
+        Integer data[] = new Integer[] {
+                7, 4, 9, 2, 5, 8, 11, 3, 12, 1
+        };
+
+        BinarySearchTree<Integer> bst = new BinarySearchTree<>();
+        for (int i = 0; i < data.length; i++) {
+            bst.add(data[i]);
+        }
+
+        BinaryTrees.println(bst);
+
+        System.out.println("-------------------- 此处是方法分割线 --------------------");
+
+        bst.preorderTraversal();
+
+        System.out.println("-------------------- 此处是方法分割线 --------------------");
+
+        bst.inorderTraversal();
+
+        System.out.println("-------------------- 此处是方法分割线 --------------------");
+
+        bst.postorderTraversal();
+
+        System.out.println("-------------------- 此处是方法分割线 --------------------");
+
+        bst.levelOrderTraversal();
+
     }
 }
