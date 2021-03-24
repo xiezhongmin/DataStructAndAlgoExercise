@@ -9,6 +9,7 @@ public class Main {
         testIntegerTree();
         testPersonTree();
         testTraversalTree();
+        testIsCompleteTree();
     }
 
     static void testIntegerTree() {
@@ -70,19 +71,57 @@ public class Main {
 
         System.out.println("-------------------- 此处是方法分割线 --------------------");
 
-        bst.preorderTraversal();
+        bst.preorder(new BinarySearchTree.Visitor<Integer>() {
+            public boolean visit(Integer element) {
+                System.out.print(element + " ");
+                return element == 2;
+            }
+        });
 
+        System.out.println();
+
+        bst.inorder(new BinarySearchTree.Visitor<Integer>() {
+            public boolean visit(Integer element) {
+                System.out.print(element + " ");
+                return element == 3;
+            }
+        });
+
+        System.out.println();
+
+        bst.postorder(new BinarySearchTree.Visitor<Integer>() {
+            public boolean visit(Integer element) {
+                System.out.print(element + " ");
+                return element == 2;
+            }
+        });
+
+        System.out.println();
+
+        bst.levelOrder(new BinarySearchTree.Visitor<Integer>() {
+            public boolean visit(Integer element) {
+                System.out.print(element + " ");
+                return element == 9;
+            }
+        });
+
+        System.out.println();
+    }
+
+    static void testIsCompleteTree() {
         System.out.println("-------------------- 此处是方法分割线 --------------------");
 
-        bst.inorderTraversal();
+        Integer data[] = new Integer[] {
+                7, 4, 9, 2, 5
+        };
 
-        System.out.println("-------------------- 此处是方法分割线 --------------------");
+        BinarySearchTree<Integer> bst = new BinarySearchTree<>();
+        for (int i = 0; i < data.length; i++) {
+            bst.add(data[i]);
+        }
 
-        bst.postorderTraversal();
-
-        System.out.println("-------------------- 此处是方法分割线 --------------------");
-
-        bst.levelOrderTraversal();
-
+        BinaryTrees.println(bst);
+        System.out.println();
+        System.out.println(bst.isComplete());
     }
 }
