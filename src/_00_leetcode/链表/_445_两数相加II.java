@@ -51,10 +51,56 @@ public class _445_两数相加II {
     }
 
     /**
+     * 自己方案
      * 递归解法
+     * 执行用时：2 ms
      */
     public static ListNode addTwoNumbers2(ListNode l1, ListNode l2) {
-        return l2;
+        int j = 0; int k = 0;
+        ListNode node1 = l1; ListNode node2 = l2;
+        while (node1 != null) {
+            j++;
+            node1 = node1.next;
+        }
+        while (node2 != null) {
+            k++;
+            node2 = node2.next;
+        }
+
+        // 短的链表前面补0
+        ListNode zero = new ListNode(0);
+        ListNode node = zero;
+        for (int i = 0; i < Math.abs(j - k); i++) {
+            node.next = new ListNode(0);
+            node = node.next;
+        }
+        node.next = j > k ? l2 : l1;
+
+        ListNode head = null;
+        if (j > k) head = addTwoListNode(l1, zero.next);
+        else head = addTwoListNode(zero.next, l2);
+
+        if (ten != 0) { // 处理 ten 有值的情况
+            ListNode next = head;
+            head = new ListNode(ten);
+            head.next = next;
+        }
+
+        return head;
+    }
+
+    static int ten = 0;
+    private static ListNode addTwoListNode(ListNode l1, ListNode l2) {
+        if (l1 == null && l2 == null) return null;
+
+        ListNode node = addTwoListNode(l1.next, l2.next);
+        int val = l1.val + l2.val + ten;
+        ten = val / 10;
+        val %= 10;
+        ListNode newNode = new ListNode(val);
+        newNode.next = node;
+        node = newNode;
+        return node;
     }
 
     public static void main(String[] args) {
@@ -69,7 +115,7 @@ public class _445_两数相加II {
         ListNode node6  = new ListNode(6, node5);
         ListNode node7 = new ListNode(5, node6);
 
-        ListNode head = addTwoNumbers1(node4, node7);
+        ListNode head = addTwoNumbers2(node4, node7);
         head.printList(head);
     }
 }
