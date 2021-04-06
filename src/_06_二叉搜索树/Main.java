@@ -113,7 +113,7 @@ public class Main {
         System.out.println("-------------------- 此处是方法分割线 --------------------");
 
         Integer data[] = new Integer[] {
-                7, 4, 9, 2, 5
+                7, 4, 9, 2, 1
         };
 
         BinarySearchTree<Integer> bst = new BinarySearchTree<>();

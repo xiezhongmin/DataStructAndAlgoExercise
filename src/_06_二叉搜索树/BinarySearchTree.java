@@ -40,11 +40,6 @@ public class BinarySearchTree<E> implements BinaryTreeInfo {
         boolean isLeaf() {
             return this.left == null && this.right == null;
         }
-
-        // 是否是双节点(既有左节点又有右节点)
-        boolean isTwoChildren() {
-            return this.left != null && this.right != null;
-        }
     }
 
     public static abstract class Visitor<E> {
@@ -205,12 +200,15 @@ public class BinarySearchTree<E> implements BinaryTreeInfo {
             Node<E> node = queue.poll();
             if (leaf && !node.isLeaf()) return false;
 
-            if (node.isTwoChildren()) {
+            if (node.left != null) {
                 queue.offer(node.left);
-                queue.offer(node.right);
-            } else if (node.left == null && node.right != null) {
+            } else if (node.right != null) { // node.left == null && node.right != null
                 return false;
-            } else { // 剩下的必须是叶子节点
+            }
+
+            if (node.right != null) {
+                queue.offer(node.right);
+            } else { // node.right == null && (node.left != null || node.left == null) 剩下的必须是叶子节点
                 leaf = true;
             }
         }
