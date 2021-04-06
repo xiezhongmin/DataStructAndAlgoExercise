@@ -218,6 +218,40 @@ public class BinarySearchTree<E> implements BinaryTreeInfo {
         return true;
     }
 
+    // 递归法
+//    public int height() {
+//        return height(root);
+//    }
+//
+//    private int height(Node<E> node) {
+//        if (node == null) return 0;
+//        return 1 + Math.max(height(node.left), height(node.right));
+//    }
+
+    // 迭代法
+    public int height() {
+        if (root == null) return 0;
+
+        int height = 0; // 树的高度
+        int levelSize = 1; // 存储着每一层的元素数量
+        Queue<Node<E>> queue = new LinkedList<>();
+        queue.offer(root);
+
+        while (!queue.isEmpty()) {
+            Node<E> node = queue.poll();
+            levelSize--;
+
+            if (node.left != null) { queue.offer(node.left); }
+            if (node.right != null) { queue.offer(node.right); }
+            if (levelSize == 0) { // 意味着即将要访问下一层
+                levelSize = queue.size();
+                height++;
+            }
+        }
+
+        return height;
+    }
+
     private int compare(E e1, E e2) {
         if (comparator != null) { // 外界传入一个 Comparator 自定义比较方案
             return comparator.compare(e1, e2);

@@ -10,6 +10,7 @@ public class Main {
         testPersonTree();
         testTraversalTree();
         testIsCompleteTree();
+        testHeightTree();
     }
 
     static void testIntegerTree() {
@@ -123,5 +124,23 @@ public class Main {
         BinaryTrees.println(bst);
         System.out.println();
         System.out.println(bst.isComplete());
+
+        System.out.println("-------------------- 此处是方法分割线 --------------------");
+    }
+
+    static void  testHeightTree() {
+        Integer data[] = new Integer[] {
+                7, 4, 9, 2, 5, 8, 11, 3, 12, 1, 15, 17, 9
+        };
+
+        BinarySearchTree<Integer> bst = new BinarySearchTree<>();
+        for (int i = 0; i < data.length; i++) {
+            bst.add(data[i]);
+        }
+
+        BinaryTrees.println(bst);
+        System.out.println(bst.height());
+
+        System.out.println("-------------------- 此处是方法分割线 --------------------");
     }
 }
