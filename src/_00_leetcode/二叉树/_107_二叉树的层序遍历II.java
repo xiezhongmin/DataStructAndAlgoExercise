@@ -1,9 +1,6 @@
 package _00_leetcode.二叉树;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 /**
  * https://leetcode-cn.com/problems/binary-tree-level-order-traversal/
@@ -16,24 +13,24 @@ import java.util.Queue;
  *   / \
  *  9  20
  *    /  \
- *   15   7
+ *   15  7
  * 返回其层序遍历结果：
  *
  * [
- *   [3],
+ *   [15,7],
  *   [9,20],
- *   [15,7]
+ *   [3],
  * ]
  */
-public class _102_二叉树的层序遍历 {
+public class _107_二叉树的层序遍历II {
 
     /**
      * 遍历
-     * 执行用时：1 ms, 在所有 Java 提交中击败了 94.61%
-     * 内存消耗：38.7 MB, 在所有 Java 提交中击败了 40.10% 的用户
+     * 执行用时：1 ms, 在所有 Java 提交中击败了 99.04%
+     * 内存消耗：38.8 MB, 在所有 Java 提交中击败了 37.45% 的用户
      *
      */
-    static public List<List<Integer>> levelOrder(TreeNode root) {
+    static public List<List<Integer>> levelOrderBottom(TreeNode root) {
         List<List<Integer>> list = new ArrayList<>();
         if (root == null) return list;
 
@@ -57,19 +54,30 @@ public class _102_二叉树的层序遍历 {
             }
         }
 
+        return reverseList(list);
+    }
+
+    // 数组反转
+    public static List<List<Integer>> reverseList (List<List<Integer>> list) {
+        for (int i = 0; i < list.size() / 2; i++) {
+            // 进行数组互换
+            List<Integer> subList = list.get(i);
+            list.set(i, list.get(list.size() - 1 - i));
+            list.set(list.size() - 1 - i, subList);
+        }
         return list;
     }
 
     public static void main(String[] args) {
-        TreeNode root = new TreeNode(1, null, null);
-        TreeNode left = new TreeNode(2, null, null);
-        TreeNode right = new TreeNode(3, null, null);
-        TreeNode subLeft = new TreeNode(4, null, null);
-        TreeNode subRight = new TreeNode(5, null, null);
+        TreeNode root = new TreeNode(3, null, null);
+        TreeNode left = new TreeNode(9, null, null);
+        TreeNode right = new TreeNode(20, null, null);
+        TreeNode subLeft = new TreeNode(15, null, null);
+        TreeNode subRight = new TreeNode(7, null, null);
         right.left = subLeft;
         right.right = subRight;
         root.left = left;
         root.right = right;
-        System.out.println(levelOrder(root));
+        System.out.println(levelOrderBottom(root));
     }
 }
