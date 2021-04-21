@@ -5,6 +5,7 @@ import _00_utils.printer.BinaryTreeInfo;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Stack;
 
 /**
  * 二叉搜索树是二叉树的一种，是应用非常广泛的一种二叉树，英文简称为BST
@@ -123,6 +124,71 @@ public class BinarySearchTree<E> implements BinaryTreeInfo {
     // 2.中序遍历（Inorder Traversal),    顺序：中序遍历左子树、根节点、中序遍历右子, 二叉搜索树的中序遍历结果是升序或者降序的
     // 3.后序遍历（Postorder Traversal)   顺序：后序遍历左子树、后序遍历右子树、根节
     // 4.层序遍历（Level Order Traversal) 顺序：从上到下、从左到右依次访问每一个节点
+
+    // ----------------------------------- 非递归 -----------------------------------
+
+    // 1.前序遍历（Preorder Traversal)
+    public void preorder() {
+        if (root == null) return;
+
+        Stack<Node<E>> stack = new Stack<>();
+        stack.push(root);
+
+        while (!stack.isEmpty()) {
+            Node<E> node = stack.pop();
+            System.out.print(node.element + " ");
+            if (node.right != null) { stack.push(node.right); }
+            if (node.left != null) { stack.push(node.left); }
+        }
+    }
+
+    // 2.中序遍历（Inorder Traversal)
+    public void inorder() {
+        if (root == null) return;
+
+        Stack<Node<E>> stack = new Stack<>();
+        Node<E> node = root;
+
+        do {
+            if (node != null) {
+                stack.push(node);
+                node = node.left;
+            } else {
+                if (stack.isEmpty()) break;
+                node = stack.pop();
+                System.out.print(node.element + " ");
+                node = node.right;
+            }
+        } while (true);
+    }
+
+    // 3.后序遍历（Postorder Traversal)
+    public void postorder() {
+        if (root == null) return;
+
+        Stack<Node<E>> stack = new Stack<>();
+        stack.push(root);
+
+        Node<E> last = null;
+        while (!stack.isEmpty()) {
+            Node<E> node = stack.peek();
+            if (node.isLeaf()
+               || (last != null && (last == node.left || last == node.right))) {
+                // 如果栈顶节点是叶子节点 或者 上一次访问的节点是栈顶节点的子节点
+                // 弹出栈顶节点，进行访问
+                node = stack.pop();
+                System.out.print(node.element + " ");
+            } else {
+                // 否则
+                // 将栈顶节点的right、left按顺序入栈
+                if (node.right != null) { stack.push(node.right); }
+                if (node.left != null) { stack.push(node.left); }
+            }
+            last = node;
+        }
+    }
+
+    // ----------------------------------- 递归 -----------------------------------
 
     // 1.前序遍历（Preorder Traversal)
     public void preorder(Visitor<E> visitor) {
