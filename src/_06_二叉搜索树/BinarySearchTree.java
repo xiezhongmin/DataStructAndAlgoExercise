@@ -68,7 +68,8 @@ public class BinarySearchTree<E> implements BinaryTreeInfo {
     public boolean isEmpty() { return size == 0; }
 
     public void clear() {
-
+        root = null;
+        size = 0;
     }
 
     public void add(E element) {
@@ -112,11 +113,11 @@ public class BinarySearchTree<E> implements BinaryTreeInfo {
     }
 
     public void remove(E element) {
-
+        remove(node(element));
     }
 
     public boolean contains(E element) {
-        return false;
+        return node(element) != null;
     }
 
     // 二叉树的遍历：
@@ -314,6 +315,108 @@ public class BinarySearchTree<E> implements BinaryTreeInfo {
         }
 
         return height;
+    }
+
+    private Node<E> node(E element) {
+        Node<E> node = root;
+
+        while (node != null) {
+            int cmp = compare(element, node.element);
+            if (cmp == 0) {
+                return node;
+            } else if (cmp < 0) {
+                node = node.left;
+            } else {
+                node = node.right;
+            }
+        }
+
+        return null;
+    }
+
+    private void remove(Node<E> node) {
+        if (node == null) return;
+
+        size--;
+
+        // 1.先处理删除度为2的节点
+        if (node.left != null && node.right != null) {
+            // 2.找到它的前驱节点或者后继结点
+            Node<E> p = predecessor(node);
+            // 3.它的前驱节点或者后继结点的值覆盖当前节点的值
+            node.element = p.element;
+            // 4.保存前驱节点或者后继结点，等待后面删除
+            node = p;
+        }
+
+        // 5.来到这里即删除度为0或者度1的节点
+        Node<E> replacement = node.left != null? node.left : node.right;
+
+        if (replacement != null) { // 度为1的节点
+            replacement.parent = node.parent;
+
+            if (node.parent == null) { // 是 root 节点
+                root = replacement;
+            } else if (node == node.parent.left) {
+                node.parent.left = replacement;
+            } else {
+                node.parent.right = replacement;
+            }
+        } else if (node.parent == null) { // node是叶子节点并且是根节点
+            root = null;
+        } else { // node是叶子节点并且不是根节点
+            if (node == node.parent.left) {
+                node.parent.left = null;
+            } else {
+                node.parent.right = null;
+            }
+        }
+    }
+
+    // 二叉树的前驱节点
+    private Node<E> predecessor(Node<E> node) {
+        if (node == null) return null;
+
+        // 如果 node 的 左子树有值
+        // 则它的前驱节点就等于：它的左子树的最大的节点（最右的节点）
+        if (node.left != null) {
+            Node<E> p = node.left;
+            while (p.right != null) {
+                p = p.right;
+            }
+            return p;
+        }
+
+        // 进来这里即左子树为空
+        // 则它的前驱节点等于：它的父节点满足（它的父节点有值并且是父节点的右子节点）
+        while (node.parent != null && node != node.parent.right) {
+            node = node.parent;
+        }
+
+        return node.parent;
+    }
+
+    // 后继节点
+    private Node<E> successor(Node<E> node) {
+        if (node == null) return null;
+
+        // 如果 node 的 右子树有值
+        // 则它的后驱节点就等于：它的右子树的最小的节点（最左的节点）
+        if (node.right != null) {
+            Node<E> p = node.right;
+            while (p.left != null) {
+                p = p.left;
+            }
+            return p;
+        }
+
+        // 进来这里即右子树为空
+        // 则它的后驱节点等于：它的父节点满足（它的父节点有值并且是父节点的左子节点）
+        while (node.parent != null && node != node.parent.left) {
+            node = node.parent;
+        }
+
+        return node.parent;
     }
 
     private int compare(E e1, E e2) {

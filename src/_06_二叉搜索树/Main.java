@@ -11,6 +11,7 @@ public class Main {
         testTraversalTree();
         testIsCompleteTree();
         testHeightTree();
+        testRemoveElementTree();
     }
 
     static void testIntegerTree() {
@@ -140,7 +141,7 @@ public class Main {
         System.out.println("-------------------- 此处是方法分割线 --------------------");
     }
 
-    static void  testHeightTree() {
+    static void testHeightTree() {
         Integer data[] = new Integer[] {
                 7, 4, 9, 2, 5, 8, 11, 3, 12, 1, 15, 17, 9
         };
@@ -154,5 +155,22 @@ public class Main {
         System.out.println(bst.height());
 
         System.out.println("-------------------- 此处是方法分割线 --------------------");
+    }
+
+    static void testRemoveElementTree() {
+        Integer data[] = new Integer[] {
+                7, 4, 9, 2, 5, 8, 11, 3, 12, 1
+        };
+
+        BinarySearchTree<Integer> bst = new BinarySearchTree<>();
+        for (int i = 0; i < data.length; i++) {
+            bst.add(data[i]);
+        }
+
+        BinaryTrees.println(bst);
+
+        bst.remove(4);
+
+        BinaryTrees.println(bst);
     }
 }
