@@ -139,4 +139,10 @@ public class BST<E> extends BinaryTree<E> {
         }
         return ((Comparable<E>)e1).compareTo(e2); // 如果没有传入Comparator，强制认定元素实现了 Comparable 接口
     }
+
+    protected void elementNotNullCheck(E element) {
+        if (element == null) {
+            throw new IllegalArgumentException("element must not be null");
+        }
+    }
 }

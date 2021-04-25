@@ -196,12 +196,6 @@ public class BinaryTree<E> implements BinaryTreeInfo {
         return node.parent;
     }
 
-    protected void elementNotNullCheck(E element) {
-        if (element == null) {
-            throw new IllegalArgumentException("element must not be null");
-        }
-    }
-
     @Override
     public Object root() {
         return root;
