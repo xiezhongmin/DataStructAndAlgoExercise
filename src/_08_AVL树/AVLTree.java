@@ -73,6 +73,20 @@ public class AVLTree<E> extends BST<E> {
         }
     }
 
+    @Override
+    protected void removeAfter(Node<E> node) {
+        // 1.循环往上找到失衡的父元素
+        // 2.判断平横因子，是否失去平衡
+        while ((node = node.parent) != null) {
+            if (isBalanced(node)) { // 平衡
+                updateHeight(node);
+            } else { // 失衡
+                // 3.修复平衡
+                rebalanced2(node);
+            }
+        }
+    }
+
     /**
      * 是否是平衡
      */

@@ -33,7 +33,17 @@ public class BST<E> extends BinaryTree<E> {
         return new Node(element, parent);
     }
 
+    /**
+     * 添加节点之后的处理
+     * @param node 被添加的节点
+     */
     protected void addAfter(Node<E> node) {}
+
+    /**
+     * 删除节点之后的处理
+     * @param node 被删除的节点
+     */
+    protected void removeAfter(Node<E> node) {}
 
     public void add(E element) {
         elementNotNullCheck(element);
@@ -88,23 +98,6 @@ public class BST<E> extends BinaryTree<E> {
         return node(element) != null;
     }
 
-    private Node<E> node(E element) {
-        Node<E> node = root;
-
-        while (node != null) {
-            int cmp = compare(element, node.element);
-            if (cmp == 0) {
-                return node;
-            } else if (cmp < 0) {
-                node = node.left;
-            } else {
-                node = node.right;
-            }
-        }
-
-        return null;
-    }
-
     private void remove(Node<E> node) {
         if (node == null) return;
 
@@ -133,15 +126,41 @@ public class BST<E> extends BinaryTree<E> {
             } else {
                 node.parent.right = replacement;
             }
+
+            // 删除之后的处理
+            removeAfter(node);
         } else if (node.parent == null) { // node是叶子节点并且是根节点
             root = null;
+
+            // 删除之后的处理
+            removeAfter(node);
         } else { // node是叶子节点并且不是根节点
             if (node == node.parent.left) {
                 node.parent.left = null;
             } else {
                 node.parent.right = null;
             }
+
+            // 删除之后的处理
+            removeAfter(node);
         }
+    }
+
+    private Node<E> node(E element) {
+        Node<E> node = root;
+
+        while (node != null) {
+            int cmp = compare(element, node.element);
+            if (cmp == 0) {
+                return node;
+            } else if (cmp < 0) {
+                node = node.left;
+            } else {
+                node = node.right;
+            }
+        }
+
+        return null;
     }
 
     private int compare(E e1, E e2) {
