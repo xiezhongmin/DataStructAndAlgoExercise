@@ -66,7 +66,7 @@ public class AVLTree<E> extends BST<E> {
                 updateHeight(node);
             } else { // 失衡
                 // 3.修复平衡
-                rebalanced(node);
+                rebalanced2(node);
                 // 只需修复一次，整棵树都会平衡
                 break;
             }
@@ -85,6 +85,103 @@ public class AVLTree<E> extends BST<E> {
      */
     private void updateHeight(Node<E> node) {
         ((AVLNode<E>) node).updateHeight();
+    }
+
+    /**
+     * 修复平衡：方法一（通过判断左旋、右旋）
+     * @param grand 旋转的节点
+     */
+    private void rebalanced(Node<E> grand) {
+        // 1.判断是哪种失衡 （LL、 RR、 LR、 RL ）
+        Node<E> parent = ((AVLNode<E>) grand).tallerChild();
+        Node<E> node = ((AVLNode<E>) parent).tallerChild();
+
+        if (parent.isLeftChild()) { // L
+            if (node.isLeftChild()) { // LL 右旋
+                rotateRight(grand);
+            } else { // LR 左旋 右旋
+                rotateLift(parent);
+                rotateRight(grand);
+            }
+        } else { // R
+            if (node.isRightChild()) { // RR 左旋
+                rotateLift(grand);
+            } else { // RL 右旋 左旋
+                rotateRight(parent);
+                rotateLift(grand);
+            }
+        }
+    }
+
+    /**
+     * 修复平衡：方法二（统一旋转）
+     * @param grand 旋转的节点
+     */
+    private void rebalanced2(Node<E> grand) {
+        // 1.判断是哪种失衡 （LL、 RR、 LR、 RL ）
+        Node<E> parent = ((AVLNode<E>) grand).tallerChild();
+        Node<E> node = ((AVLNode<E>) parent).tallerChild();
+
+        if (parent.isLeftChild()) { // L
+            if (node.isLeftChild()) { // LL 右旋
+                rotate(grand, node.left, node, node.right, parent,parent.right, grand, grand.right);
+            } else { // LR 左旋 右旋
+                rotate(grand, parent.left, parent, node.left, node, node.right, grand, grand.right);
+            }
+        } else { // R
+            if (node.isRightChild()) { // RR 左旋
+                rotate(grand, grand.left, grand, parent.left, parent, node.left, node, node.right);
+            } else { // RL 右旋 左旋
+                rotate(grand, grand.left, grand, node.left, node, node.right, parent, parent.right);
+            }
+        }
+    }
+
+    /**
+     * 统一旋转处理
+     */
+    private void rotate(Node<E> r, // 原根节点
+                        Node<E> a, Node<E> b, Node<E> c,
+                        Node<E> d, // 将成为的根节点
+                        Node<E> e, Node<E> f, Node<E> g) {
+        // 1.更新d的父节点
+        d.parent = r.parent;
+        if (r.isLeftChild()) {
+            r.parent.left = d;
+        } else if (r.isRightChild()) {
+            r.parent.right = d;
+        } else {
+            root = d;
+        }
+
+        // 2.处理：a-b-c
+        b.left = a;
+        if (a != null) {
+            a.parent = b;
+        }
+        b.right = c;
+        if (c != null) {
+            c.parent = b;
+        }
+        updateHeight(b);
+
+        // 3.处理：e-f-g
+        f.left = e;
+        if (e != null) {
+            e.parent = f;
+        }
+        f.right = g;
+        if (g != null) {
+            g.parent = f;
+        }
+        updateHeight(f);
+
+        // 4.处理：b-d-f
+        d.left = b;
+        d.right = f;
+        b.parent = d;
+        f.parent = d;
+        updateHeight(d);
     }
 
     /**
@@ -145,28 +242,6 @@ public class AVLTree<E> extends BST<E> {
         // 3.更新高度
         updateHeight(grand);
         updateHeight(parent);
-    }
-
-    private void rebalanced(Node<E> grand) {
-        // 1.判断是哪种失衡 （LL、 RR、 LR、 RL ）
-        Node<E> parent = ((AVLNode<E>) grand).tallerChild();
-        Node<E> node = ((AVLNode<E>) parent).tallerChild();
-
-        if (parent.isLeftChild()) { // L
-            if (node.isLeftChild()) { // LL 右旋
-                rotateRight(grand);
-            } else { // LR 左旋 右旋
-                rotateLift(parent);
-                rotateRight(grand);
-            }
-        } else { // R
-            if (node.isRightChild()) { // RR 左旋
-                rotateLift(grand);
-            } else { // RL 右旋 左旋
-                rotateRight(parent);
-                rotateLift(grand);
-            }
-        }
     }
 
     public Object string(Object node) {
