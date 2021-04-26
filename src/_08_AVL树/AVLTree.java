@@ -138,15 +138,15 @@ public class AVLTree<E> extends BST<E> {
 
         if (parent.isLeftChild()) { // L
             if (node.isLeftChild()) { // LL 右旋
-                rotate(grand, node.left, node, node.right, parent,parent.right, grand, grand.right);
+                rotate(grand, node, node.right, parent,parent.right, grand);
             } else { // LR 左旋 右旋
-                rotate(grand, parent.left, parent, node.left, node, node.right, grand, grand.right);
+                rotate(grand, parent, node.left, node, node.right, grand);
             }
         } else { // R
             if (node.isRightChild()) { // RR 左旋
-                rotate(grand, grand.left, grand, parent.left, parent, node.left, node, node.right);
+                rotate(grand, grand, parent.left, parent, node.left, node);
             } else { // RL 右旋 左旋
-                rotate(grand, grand.left, grand, node.left, node, node.right, parent, parent.right);
+                rotate(grand, grand, node.left, node, node.right, parent);
             }
         }
     }
@@ -155,9 +155,9 @@ public class AVLTree<E> extends BST<E> {
      * 统一旋转处理
      */
     private void rotate(Node<E> r, // 原根节点
-                        Node<E> a, Node<E> b, Node<E> c,
+                        Node<E> b, Node<E> c,
                         Node<E> d, // 将成为的根节点
-                        Node<E> e, Node<E> f, Node<E> g) {
+                        Node<E> e, Node<E> f) {
         // 1.更新d的父节点
         d.parent = r.parent;
         if (r.isLeftChild()) {
@@ -168,25 +168,17 @@ public class AVLTree<E> extends BST<E> {
             root = d;
         }
 
-        // 2.处理：a-b-c
-        b.left = a;
-        if (a != null) {
-            a.parent = b;
-        }
+        // 2.处理：b-c
         b.right = c;
         if (c != null) {
             c.parent = b;
         }
         updateHeight(b);
 
-        // 3.处理：e-f-g
+        // 3.处理：e-f
         f.left = e;
         if (e != null) {
             e.parent = f;
-        }
-        f.right = g;
-        if (g != null) {
-            g.parent = f;
         }
         updateHeight(f);
 

@@ -5,6 +5,7 @@ import _00_utils.printer.BinaryTrees;
 public class Main {
     public static void main(String[] args) {
         testAddElementTree();
+        System.out.println("----------------------------- 方法分割线 -----------------------------");
         testRemoveElementTree();
     }
 
