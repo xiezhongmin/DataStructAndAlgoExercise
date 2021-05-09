@@ -1,14 +1,14 @@
-package _08_AVL树;
+package _09_红黑树;
 
 import java.util.Comparator;
 
-public class AVLTree<E> extends BST<E> {
+public class AVLTree<E> extends BBST<E> {
     public AVLTree() {
         this(null);
     }
 
     public AVLTree(Comparable<E> comparator) {
-        super((Comparator<E>) comparator);
+        super((Comparable<E>) comparator);
     }
 
     private static class AVLNode<E> extends Node<E> {
@@ -72,7 +72,7 @@ public class AVLTree<E> extends BST<E> {
                 updateHeight(node);
             } else { // 失衡
                 // 3.修复平衡
-                rebalanced2(node);
+                rebalanced(node);
                 // 只需修复一次，整棵树都会平衡
                 break;
             }
@@ -91,6 +91,25 @@ public class AVLTree<E> extends BST<E> {
                 rebalanced2(node);
             }
         }
+    }
+
+    @Override
+    protected void afterRotate(Node<E> grand, Node<E> parent, Node<E> child) {
+        super.afterRotate(grand, parent, child);
+
+        // 更新高度
+        updateHeight(grand);
+        updateHeight(parent);
+    }
+
+    @Override
+    protected void rotate(Node<E> r, Node<E> b, Node<E> c, Node<E> d, Node<E> e, Node<E> f) {
+        super.rotate(r, b, c, d, e, f);
+
+        // 更新高度
+        updateHeight(b);
+        updateHeight(f);
+        updateHeight(d);
     }
 
     /**
@@ -155,104 +174,5 @@ public class AVLTree<E> extends BST<E> {
                 rotate(grand, grand, node.left, node, node.right, parent);
             }
         }
-    }
-
-    /**
-     * 统一旋转处理
-     */
-    private void rotate(Node<E> r, // 原根节点
-                        Node<E> b, Node<E> c,
-                        Node<E> d, // 将成为的根节点
-                        Node<E> e, Node<E> f) {
-        // 1.更新d的父节点
-        d.parent = r.parent;
-        if (r.isLeftChild()) {
-            r.parent.left = d;
-        } else if (r.isRightChild()) {
-            r.parent.right = d;
-        } else {
-            root = d;
-        }
-
-        // 2.处理：b-c
-        b.right = c;
-        if (c != null) {
-            c.parent = b;
-        }
-        updateHeight(b);
-
-        // 3.处理：e-f
-        f.left = e;
-        if (e != null) {
-            e.parent = f;
-        }
-        updateHeight(f);
-
-        // 4.处理：b-d-f
-        d.left = b;
-        d.right = f;
-        b.parent = d;
-        f.parent = d;
-        updateHeight(d);
-    }
-
-    /**
-     * LL右旋
-     */
-    private void rotateRight(Node<E> grand) {
-        Node<E> parent = grand.left;
-
-        // 1.旋转
-        Node<E> child = parent.right;
-        grand.left = child;
-        parent.right = grand;
-
-        // 2.更新父节点
-        parent.parent = grand.parent;
-        if (grand.isLeftChild()) {
-            grand.parent.left = parent;
-        } else if (grand.isRightChild()){
-            grand.parent.right = parent;
-        } else {
-            root = parent;
-        }
-        grand.parent = parent;
-        if (child != null) {
-            child.parent = grand;
-        }
-
-        // 3.跟新高度
-        updateHeight(grand);
-        updateHeight(parent);
-    }
-
-    /**
-     * RR 左旋
-     */
-    private void rotateLift(Node<E> grand) {
-        Node<E> parent = grand.right;
-
-        // 1.旋转
-        Node<E> child = parent.left;
-        grand.right = child;
-        parent.left = grand;
-
-        // 2.更新父节点
-        parent.parent = grand.parent;
-        if (grand.isLeftChild()) {
-            grand.parent.left = parent;
-        } else if (grand.isRightChild()){
-            grand.parent.right = parent;
-        } else {
-            root = parent;
-        }
-        grand.parent = parent;
-        if (child != null) {
-            child.parent = grand;
-        }
-
-        // 3.更新高度
-        updateHeight(grand);
-        updateHeight(parent);
     }
 }
