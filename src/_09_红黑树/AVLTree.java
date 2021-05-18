@@ -1,7 +1,5 @@
 package _09_红黑树;
 
-import java.util.Comparator;
-
 public class AVLTree<E> extends BBST<E> {
     public AVLTree() {
         this(null);

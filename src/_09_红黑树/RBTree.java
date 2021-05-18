@@ -1,7 +1,5 @@
 package _09_红黑树;
 
-import java.util.Comparator;
-
 public class RBTree<E> extends BBST<E> {
     private static final boolean RED = false;
     private static final boolean BLACK = true;

@@ -1,8 +1,6 @@
 package _09_红黑树;
 
 import _00_utils.printer.BinaryTreeInfo;
-
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.Queue;
 
