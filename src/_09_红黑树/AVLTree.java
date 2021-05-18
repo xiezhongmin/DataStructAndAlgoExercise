@@ -80,7 +80,7 @@ public class AVLTree<E> extends BBST<E> {
     }
 
     @Override
-    protected void removeAfter(Node<E> node) {
+    protected void removeAfter(Node<E> node, Node<E> replacement) {
         // 1.循环往上找到失衡的父元素
         // 2.判断平横因子，是否失去平衡
         while ((node = node.parent) != null) {
@@ -139,15 +139,15 @@ public class AVLTree<E> extends BBST<E> {
             if (node.isLeftChild()) { // LL 右旋
                 rotateRight(grand);
             } else { // LR 左旋 右旋
-                rotateLift(parent);
+                rotateLeft(parent);
                 rotateRight(grand);
             }
         } else { // R
             if (node.isRightChild()) { // RR 左旋
-                rotateLift(grand);
+                rotateLeft(grand);
             } else { // RL 右旋 左旋
                 rotateRight(parent);
-                rotateLift(grand);
+                rotateLeft(grand);
             }
         }
     }

@@ -62,7 +62,7 @@ public class BBST<E> extends BST<E> {
     /**
      * RR 左旋
      */
-    protected void rotateLift(Node<E> grand) {
+    protected void rotateLeft(Node<E> grand) {
         // 旋转
         Node<E> parent = grand.right;
         Node<E> child = parent.left;

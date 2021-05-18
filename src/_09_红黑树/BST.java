@@ -43,7 +43,7 @@ public class BST<E> extends BinaryTree<E> {
      * 删除节点之后的处理
      * @param node 被删除的节点
      */
-    protected void removeAfter(Node<E> node) {}
+    protected void removeAfter(Node<E> node, Node<E> replacement) {}
 
     public void add(E element) {
         elementNotNullCheck(element);
@@ -106,7 +106,7 @@ public class BST<E> extends BinaryTree<E> {
         // 1.先处理删除度为2的节点
         if (node.hasTwoChildren()) {
             // 2.找到它的前驱节点或者后继结点
-            Node<E> p = predecessor(node);
+            Node<E> p = successor(node);
             // 3.它的前驱节点或者后继结点的值覆盖当前节点的值
             node.element = p.element;
             // 4.保存前驱节点或者后继结点，等待后面删除
@@ -128,12 +128,12 @@ public class BST<E> extends BinaryTree<E> {
             }
 
             // 删除之后的处理
-            removeAfter(node);
+            removeAfter(node, replacement);
         } else if (node.parent == null) { // node是叶子节点并且是根节点
             root = null;
 
             // 删除之后的处理
-            removeAfter(node);
+            removeAfter(node, null);
         } else { // node是叶子节点并且不是根节点
             if (node == node.parent.left) {
                 node.parent.left = null;
@@ -142,7 +142,7 @@ public class BST<E> extends BinaryTree<E> {
             }
 
             // 删除之后的处理
-            removeAfter(node);
+            removeAfter(node, null);
         }
     }
 

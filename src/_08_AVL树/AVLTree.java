@@ -120,15 +120,15 @@ public class AVLTree<E> extends BST<E> {
             if (node.isLeftChild()) { // LL 右旋
                 rotateRight(grand);
             } else { // LR 左旋 右旋
-                rotateLift(parent);
+                rotateLeft(parent);
                 rotateRight(grand);
             }
         } else { // R
             if (node.isRightChild()) { // RR 左旋
-                rotateLift(grand);
+                rotateLeft(grand);
             } else { // RL 右旋 左旋
                 rotateRight(parent);
-                rotateLift(grand);
+                rotateLeft(grand);
             }
         }
     }
@@ -229,7 +229,7 @@ public class AVLTree<E> extends BST<E> {
     /**
      * RR 左旋
      */
-    private void rotateLift(Node<E> grand) {
+    private void rotateLeft(Node<E> grand) {
         Node<E> parent = grand.right;
 
         // 1.旋转
