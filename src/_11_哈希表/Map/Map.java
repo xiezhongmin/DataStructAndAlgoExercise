@@ -1,4 +1,4 @@
-package _10_Set_Map.Map;
+package _11_哈希表.Map;
 
 public interface Map<K, V> {
     int size();

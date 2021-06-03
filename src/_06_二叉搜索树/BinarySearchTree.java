@@ -89,7 +89,7 @@ public class BinarySearchTree<E> implements BinaryTreeInfo {
         int cmp = 0;
         Node<E> node = root;
         Node<E> parent = root;
-        while (node != null) {
+        do {
             cmp = compare(element, node.element); // 保存比较结果
             parent = node; // 保存父节点
 
@@ -101,7 +101,7 @@ public class BinarySearchTree<E> implements BinaryTreeInfo {
                 node.element = element; // 覆盖
                 return;
             }
-        }
+        } while (node != null);
 
         if (cmp > 0) {
             parent.right = new Node<E>(element, parent); // 大的放右边

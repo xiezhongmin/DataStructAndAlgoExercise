@@ -51,7 +51,6 @@ public class BST<E> extends BinaryTree<E> {
         if (root == null) { // 首次添加
             root = createNode(element, null);
             size++;
-
             addAfter(root);
             return;
         }
@@ -64,7 +63,7 @@ public class BST<E> extends BinaryTree<E> {
         int cmp = 0;
         Node<E> node = root;
         Node<E> parent = root;
-        while (node != null) {
+        do {
             cmp = compare(element, node.element); // 保存比较结果
             parent = node; // 保存父节点
 
@@ -76,7 +75,7 @@ public class BST<E> extends BinaryTree<E> {
                 node.element = element; // 覆盖
                 return;
             }
-        }
+        } while (node != null);
 
         Node<E> newNode = createNode(element, parent);
         if (cmp > 0) {

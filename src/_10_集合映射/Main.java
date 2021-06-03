@@ -1,12 +1,12 @@
-package _10_Set_Map;
+package _10_集合映射;
 
 import _00_utils.TimeUtil;
 import _00_utils.file.FileInfo;
 import _00_utils.file.Files;
-import _10_Set_Map.Map.Map;
-import _10_Set_Map.Map.TreeMap;
-import _10_Set_Map.Set.Set;
-import _10_Set_Map.Set.TreeSet;
+import _10_集合映射.Map.Map;
+import _10_集合映射.Map.TreeMap;
+import _10_集合映射.Set.Set;
+import _10_集合映射.Set.TreeSet;
 
 public class Main {
     public static void main(String[] args) {

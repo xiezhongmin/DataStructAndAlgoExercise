@@ -1,7 +1,7 @@
-package _10_Set_Map.Set;
+package _10_集合映射.Set;
 
-import _10_Set_Map.Map.Map;
-import _10_Set_Map.Map.TreeMap;
+import _10_集合映射.Map.Map;
+import _10_集合映射.Map.TreeMap;
 
 public class TreeSet<E> implements Set<E> {
     TreeMap<E, Object> map = new TreeMap<>();

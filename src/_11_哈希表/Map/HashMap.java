@@ -1,29 +1,32 @@
-package _10_Set_Map.Map;
+package _11_哈希表.Map;
 
-import java.util.Comparator;
+import _00_utils.printer.BinaryTreeInfo;
+import _00_utils.printer.BinaryTrees;
+import sun.jvm.hotspot.tools.SysPropsDumper;
+
 import java.util.LinkedList;
+import java.util.Objects;
 import java.util.Queue;
 
-public class TreeMap<K, V> implements Map<K, V> {
+public class HashMap<K, V> implements Map<K, V> {
     private int size;
-    private Node<K, V> root;
+    private Node<K, V> table[];
     private static final boolean RED = false;
     private static final boolean BLACK = true;
-    private Comparator<K> comparator;
+    private static final int DEFAULT_CAPACITY = 1 << 4;
 
-    // 默认构造方法
-    public TreeMap() {
-        this(null);
+    public HashMap() {
+        this(DEFAULT_CAPACITY);
     }
 
-    // 构造方法 + 比较器
-    public TreeMap(Comparator<K> comparator) {
-        this.comparator = comparator;
+    public HashMap(int capacity) {
+        table = new Node[capacity];
     }
 
     private static class Node<K, V> {
         K key;
         V value;
+        int hash;
         Node<K, V> parent;
         Node<K, V> left;
         Node<K, V> right;
@@ -33,6 +36,7 @@ public class TreeMap<K, V> implements Map<K, V> {
             this.key = key;
             this.value = value;
             this.parent = parent;
+            this.hash = key == null ? 0 : key.hashCode();
         }
 
         // 是否是叶子节点
@@ -64,6 +68,10 @@ public class TreeMap<K, V> implements Map<K, V> {
             return null;
         }
 
+        @Override
+        public String toString() {
+            return " k:" + key + " v:" + value + " ";
+        }
     }
 
     @Override
@@ -78,18 +86,26 @@ public class TreeMap<K, V> implements Map<K, V> {
 
     @Override
     public void clear() {
-        root = null;
+        if (size == 0) return;
+
+        for (int i = 0; i < table.length; i++) {
+            table[i] = null;
+        }
+
         size = 0;
     }
 
     @Override
     public V put(K key, V value) {
-        keyNotNullCheck(key);
+        // 允许空值
+        // keyNotNullCheck(key);
 
+        int index = index(key);
+        Node<K, V> root = table[index];
         if (root == null) { // 首次添加
             root = new Node(key, value, null);
+            table[index] = root;
             size++;
-
             putAfter(root);
             return null;
         }
@@ -99,12 +115,49 @@ public class TreeMap<K, V> implements Map<K, V> {
         // 1.找到父节点 parent
         // 2.创建新节点 node
         // 3.parent.left = node 或者 parent.right = node
+
         int cmp = 0;
         Node<K, V> node = root;
         Node<K, V> parent = root;
+        K k1 = key;
+        int h1 = k1 == null ? 0 : k1.hashCode();
+        Node<K, V> result = null;
+        boolean searched = false;
         do {
-            cmp = compare(key, node.key); // 保存比较结果
             parent = node; // 保存父节点
+            K k2 = node.key;
+            int h2 = k2 == null ? 0 : k2.hashCode();
+
+            // 思路：
+            // 1.先比较哈希值大小
+            // 2.如果哈希值相等，判断equals是否相等
+            // 3. 哈希值相等, equals不等，先看看是否本身实现Comparable比较接口
+            // 4. 哈希值相等, equals不等, 不具备Comparable比较接口/或者比较结果为0，就只能扫描了
+            // 5. 扫描结果存在 则返回扫描结果， 不存在, 则比较内存地址大小
+
+            if (h1 > h2) {
+                cmp = 1;
+            } else if (h1 < h2) {
+                cmp = -1;
+            } else if (Objects.equals(k1, k2)) {
+                cmp = 0;
+            } else if (k1 != null && k2 != null
+                    && k1.getClass() == k2.getClass()
+                    && k1 instanceof Comparable
+                    && (cmp = ((Comparable) k1).compareTo(k2)) != 0) {
+            } else if (searched) { // 已经扫描了
+                cmp = System.identityHashCode(k1) - System.identityHashCode(k2);
+            } else { // searched == false; 还没有扫描，然后再根据内存地址大小决定左右
+                if (node.right != null && (result = node(node.right, k1)) != null
+                        || node.left != null && (result = node(node.left, k1)) != null) { // 扫描
+                    node = result;
+                    cmp = 0;
+                } else { // 已经扫描过，未找到, 则比较内存地址大小
+                    searched = true;
+                    cmp = System.identityHashCode(k1) - System.identityHashCode(k2);
+                }
+            }
+
             if (cmp > 0) { // 如果比父节点大，继续往右边找
                 node = node.right;
             } else if (cmp < 0) { // 如果比父节点小，继续往左边找
@@ -135,7 +188,7 @@ public class TreeMap<K, V> implements Map<K, V> {
     @Override
     public V get(K key) {
         Node<K, V> node = node(key);
-        return node != null ? node.value : null;
+        return node == null ? null : node.value;
     }
 
     @Override
@@ -150,21 +203,24 @@ public class TreeMap<K, V> implements Map<K, V> {
 
     @Override
     public boolean containsValue(V value) {
-        if (root == null) return false;
+        if (size == 0) return false;
 
-        Queue<Node<K, V>> queue = new LinkedList();
-        queue.offer(root);
+        Queue<Node<K, V>> queue = new LinkedList<>();
+        for (int i = 0; i < table.length; i++) {
+            Node<K, V> root = table[i];
+            if (root == null) continue;
 
-        while (!queue.isEmpty()) {
-            Node<K, V> node = queue.poll();
-            if (valEquals(value, node.value)) return true;
+            queue.offer(root);
+            while (!queue.isEmpty()) {
+                Node<K, V> node = queue.poll();
+                if (Objects.equals(node.value, value)) return true;
 
-            if (node.left != null) {
-                queue.offer(node.left);
-            }
-
-            if (node.right != null) {
-                queue.offer(node.right);
+                if (node.left != null) {
+                    queue.offer(node.left);
+                }
+                if (node.right != null) {
+                    queue.offer(node.right);
+                }
             }
         }
 
@@ -173,17 +229,57 @@ public class TreeMap<K, V> implements Map<K, V> {
 
     @Override
     public void traversal(Visitor visitor) {
-        if (visitor == null) return;
-        traversal(visitor, root);
+        if (size == 0 || visitor == null) return;
+
+        Queue<Node<K, V>> queue = new LinkedList<>();
+        for (int i = 0; i < table.length; i++) {
+            Node<K, V> root = table[i];
+            if (root == null) continue;
+
+            queue.offer(root);
+            while (!queue.isEmpty()) {
+                Node<K, V> node = queue.poll();
+                if (visitor.visit(node.key, node.value)) return;
+
+                if (node.left != null) {
+                    queue.offer(node.left);
+                }
+                if (node.right != null) {
+                    queue.offer(node.right);
+                }
+            }
+        }
     }
 
-    private void traversal(Visitor visitor, Node<K, V> node) {
-        if (node == null || visitor == null) return;
+    public void print() {
+        if (size == 0) return;
 
-        traversal(visitor, node.left);
-        if (visitor.stop) return;
-        visitor.visit(node.key, node.value);
-        traversal(visitor, node.right);
+        for (int i = 0; i < table.length; i++) {
+            final Node<K, V> root = table[i];
+            System.out.println("【index = " + i + "】");
+            BinaryTrees.println(new BinaryTreeInfo() {
+                @Override
+                public Object root() {
+                    return root;
+                }
+
+                @Override
+                public Object left(Object node) {
+                    return ((Node<K, V>) node).left;
+                }
+
+                @Override
+                public Object right(Object node) {
+                    return ((Node<K, V>) node).right;
+                }
+
+                @Override
+                public Object string(Object node) {
+                    return node;
+                }
+            });
+            System.out.println("---------------------------------------------------");
+        }
     }
 
     private V remove(Node<K, V> node) {
@@ -206,12 +302,13 @@ public class TreeMap<K, V> implements Map<K, V> {
 
         // 5.来到这里即删除度为0或者度1的节点
         Node<K, V> replacement = node.left != null ? node.left : node.right;
+        int index = index(node);
 
         if (replacement != null) { // 度为1的节点
             replacement.parent = node.parent;
 
             if (node.parent == null) { // 是 root 节点
-                root = replacement;
+                table[index] = replacement;
             } else if (node == node.parent.left) {
                 node.parent.left = replacement;
             } else {
@@ -221,7 +318,7 @@ public class TreeMap<K, V> implements Map<K, V> {
             // 删除之后的处理
             removeAfter(node, replacement);
         } else if (node.parent == null) { // node是叶子节点并且是根节点
-            root = null;
+            table[index] = null;
 
             // 如果删除是根节点是不需要修复的
             // 删除之后的处理
@@ -240,8 +337,26 @@ public class TreeMap<K, V> implements Map<K, V> {
         return oldValve;
     }
 
-    private boolean valEquals(V v1, V v2) {
-        return v1 == null ? v2 == null : v1.equals(v2);
+    /**
+     * 根据key生成对应的索引（在桶数组中的位置）
+     *
+     * @param key key
+     * @return 索引
+     */
+    private int index(K key) {
+        if (key == null) return 0;
+        int hash = key.hashCode();
+        return (hash ^ (hash >>> 16)) & (table.length - 1);
+    }
+
+    /**
+     * 根据node生成对应的索引（在桶数组中的位置）
+     *
+     * @param node node
+     * @return 索引
+     */
+    private int index(Node<K, V> node) {
+        return (node.hash ^ (node.hash >>> 16)) & (table.length - 1);
     }
 
     // ---------------------------------------   二叉树相关   ---------------------------------------
@@ -293,27 +408,44 @@ public class TreeMap<K, V> implements Map<K, V> {
     }
 
     private Node<K, V> node(K key) {
-        Node<K, V> node = root;
+        Node<K, V> root = table[index(key)];
+        return root == null ? null : node(root, key);
+    }
 
+    private Node<K, V> node(Node<K, V> node, K key) {
+        // 思路:
+        // 1.先比较哈希值大小
+        // 2.哈希值相等则比较，equals是否相等
+        // 3.哈希值相等, equals不等，先看看是否本身实现Comparable比较接口
+        // 4.以上都不满足，只能扫描了
+
+        int cmp = 0;
+        K k1 = key;
+        int h1 = k1 == null ? 0 : k1.hashCode();
+        Node<K, V> result = null;
         while (node != null) {
-            int cmp = compare(key, node.key);
-            if (cmp == 0) {
-                return node;
-            } else if (cmp < 0) {
-                node = node.left;
-            } else {
+            K k2 = node.key;
+            int h2 = k2 == null ? 0 : k2.hashCode();
+
+            if (h1 > h2) {
                 node = node.right;
+            } else if (h1 < h2) {
+                node = node.left;
+            } else if (Objects.equals(k1, k2)) {
+                return node;
+            } else if (k1 != null && k2 != null
+                    && k1.getClass() == k2.getClass()
+                    && k1 instanceof Comparable
+                    && (cmp = ((Comparable) k1).compareTo(k2)) != 0) {
+                node = cmp > 0 ? node.right : node.left;
+            } else if (node.right != null && (result = node(node.right, k1)) != null) { // 扫描右边
+                return result;
+            } else { // 扫描左边
+                node = node.left;
             }
         }
 
         return null;
-    }
-
-    private int compare(K k1, K k2) {
-        if (comparator != null) { // 外界传入一个 Comparator 自定义比较方案
-            return comparator.compare(k1, k2);
-        }
-        return ((Comparable<K>) k1).compareTo(k2); // 如果没有传入Comparator，强制认定元素实现了 Comparable 接口
     }
 
     protected void keyNotNullCheck(K key) {
@@ -532,7 +664,7 @@ public class TreeMap<K, V> implements Map<K, V> {
         } else if (grand.isRightChild()) {
             grand.parent.right = parent;
         } else {
-            root = parent;
+            table[index(grand)] = parent;
         }
         // 更新child 的父节点
         if (child != null) {
@@ -567,5 +699,4 @@ public class TreeMap<K, V> implements Map<K, V> {
     private boolean isRed(Node<K, V> node) {
         return colorOf(node) == RED;
     }
-
 }
