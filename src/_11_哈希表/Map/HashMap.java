@@ -2,11 +2,24 @@ package _11_哈希表.Map;
 
 import _00_utils.printer.BinaryTreeInfo;
 import _00_utils.printer.BinaryTrees;
-import sun.jvm.hotspot.tools.SysPropsDumper;
-
 import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Queue;
+
+/**
+ * 1.哈希冲突：
+ *  1.2个不同的key 通过哈希函数生成相同的索引(index)
+ *
+ * 2.哈希函数：
+ *  1. 先生成 key 的哈希值（必须是整数）
+ *  2. 再让 key 的哈希值跟数组的大小进行相关运算, 生成一个索引值(index)
+ *
+ * hashCode() 与 equals 的关联：
+ *  1.equals相等(表示同一个可以), 与之对应的hashCode()必定相等，当然也肯定会哈希冲突
+ *  2.hashCode()相等, 不一定equals相等
+ *  3.hashCode()相等, 必定哈希冲突
+ *  4.哈希冲突，不一定hashCode()相等, 也不一定equals相等
+ */
 
 public class HashMap<K, V> implements Map<K, V> {
     private int size;
