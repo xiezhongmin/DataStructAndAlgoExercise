@@ -14,7 +14,7 @@ import java.util.Queue;
  *  1. 先生成 key 的哈希值（必须是整数）
  *  2. 再让 key 的哈希值跟数组的大小进行相关运算, 生成一个索引值(index)
  *
- * hashCode() 与 equals 的关联：
+ * 3.hashCode() 与 equals 的关联：
  *  1.equals相等(表示同一个可以), 与之对应的hashCode()必定相等，当然也肯定会哈希冲突
  *  2.hashCode()相等, 不一定equals相等
  *  3.hashCode()相等, 必定哈希冲突
