@@ -314,7 +314,7 @@ public class TreeMap<K, V> implements Map<K, V> {
         return ((Comparable<K>) k1).compareTo(k2); // 如果没有传入Comparator，强制认定元素实现了 Comparable 接口
     }
 
-    protected void keyNotNullCheck(K key) {
+    private void keyNotNullCheck(K key) {
         if (key == null) {
             throw new IllegalArgumentException("key must not be null");
         }
@@ -500,7 +500,7 @@ public class TreeMap<K, V> implements Map<K, V> {
     /**
      * LL右旋
      */
-    protected void rotateRight(Node<K, V> grand) {
+    private void rotateRight(Node<K, V> grand) {
         // 旋转
         Node<K, V> parent = grand.left;
         Node<K, V> child = parent.right;
@@ -512,7 +512,7 @@ public class TreeMap<K, V> implements Map<K, V> {
     /**
      * RR 左旋
      */
-    protected void rotateLeft(Node<K, V> grand) {
+    private void rotateLeft(Node<K, V> grand) {
         // 旋转
         Node<K, V> parent = grand.right;
         Node<K, V> child = parent.left;
@@ -521,7 +521,7 @@ public class TreeMap<K, V> implements Map<K, V> {
         afterRotate(grand, parent, child);
     }
 
-    protected void afterRotate(Node<K, V> grand, Node<K, V> parent, Node<K, V> child) {
+    private void afterRotate(Node<K, V> grand, Node<K, V> parent, Node<K, V> child) {
         // 更新父节点
         // 让 parent成为子树的根节点
         parent.parent = grand.parent;

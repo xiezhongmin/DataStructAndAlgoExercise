@@ -372,6 +372,47 @@ public class HashMap<K, V> implements Map<K, V> {
         return (node.hash ^ (node.hash >>> 16)) & (table.length - 1);
     }
 
+    private Node<K, V> node(K key) {
+        Node<K, V> root = table[index(key)];
+        return root == null ? null : node(root, key);
+    }
+
+    private Node<K, V> node(Node<K, V> node, K key) {
+        // 思路:
+        // 1.先比较哈希值大小
+        // 2.哈希值相等则比较，equals是否相等
+        // 3.哈希值相等, equals不等，先看看是否本身实现Comparable比较接口
+        // 4.以上都不满足，只能扫描了
+
+        int cmp = 0;
+        K k1 = key;
+        int h1 = k1 == null ? 0 : k1.hashCode();
+        Node<K, V> result = null;
+        while (node != null) {
+            K k2 = node.key;
+            int h2 = k2 == null ? 0 : k2.hashCode();
+
+            if (h1 > h2) {
+                node = node.right;
+            } else if (h1 < h2) {
+                node = node.left;
+            } else if (Objects.equals(k1, k2)) {
+                return node;
+            } else if (k1 != null && k2 != null
+                    && k1.getClass() == k2.getClass()
+                    && k1 instanceof Comparable
+                    && (cmp = ((Comparable) k1).compareTo(k2)) != 0) {
+                node = cmp > 0 ? node.right : node.left;
+            } else if (node.right != null && (result = node(node.right, k1)) != null) { // 扫描右边
+                return result;
+            } else { // 扫描左边
+                node = node.left;
+            }
+        }
+
+        return null;
+    }
+
     // ---------------------------------------   二叉树相关   ---------------------------------------
 
     // 二叉树的前驱节点
@@ -419,54 +460,6 @@ public class HashMap<K, V> implements Map<K, V> {
 
         return node.parent;
     }
-
-    private Node<K, V> node(K key) {
-        Node<K, V> root = table[index(key)];
-        return root == null ? null : node(root, key);
-    }
-
-    private Node<K, V> node(Node<K, V> node, K key) {
-        // 思路:
-        // 1.先比较哈希值大小
-        // 2.哈希值相等则比较，equals是否相等
-        // 3.哈希值相等, equals不等，先看看是否本身实现Comparable比较接口
-        // 4.以上都不满足，只能扫描了
-
-        int cmp = 0;
-        K k1 = key;
-        int h1 = k1 == null ? 0 : k1.hashCode();
-        Node<K, V> result = null;
-        while (node != null) {
-            K k2 = node.key;
-            int h2 = k2 == null ? 0 : k2.hashCode();
-
-            if (h1 > h2) {
-                node = node.right;
-            } else if (h1 < h2) {
-                node = node.left;
-            } else if (Objects.equals(k1, k2)) {
-                return node;
-            } else if (k1 != null && k2 != null
-                    && k1.getClass() == k2.getClass()
-                    && k1 instanceof Comparable
-                    && (cmp = ((Comparable) k1).compareTo(k2)) != 0) {
-                node = cmp > 0 ? node.right : node.left;
-            } else if (node.right != null && (result = node(node.right, k1)) != null) { // 扫描右边
-                return result;
-            } else { // 扫描左边
-                node = node.left;
-            }
-        }
-
-        return null;
-    }
-
-    protected void keyNotNullCheck(K key) {
-        if (key == null) {
-            throw new IllegalArgumentException("key must not be null");
-        }
-    }
-
 
     // ---------------------------------------   红黑树相关   ---------------------------------------
 
@@ -647,7 +640,7 @@ public class HashMap<K, V> implements Map<K, V> {
     /**
      * LL右旋
      */
-    protected void rotateRight(Node<K, V> grand) {
+    private void rotateRight(Node<K, V> grand) {
         // 旋转
         Node<K, V> parent = grand.left;
         Node<K, V> child = parent.right;
@@ -659,7 +652,7 @@ public class HashMap<K, V> implements Map<K, V> {
     /**
      * RR 左旋
      */
-    protected void rotateLeft(Node<K, V> grand) {
+    private void rotateLeft(Node<K, V> grand) {
         // 旋转
         Node<K, V> parent = grand.right;
         Node<K, V> child = parent.left;
@@ -668,7 +661,7 @@ public class HashMap<K, V> implements Map<K, V> {
         afterRotate(grand, parent, child);
     }
 
-    protected void afterRotate(Node<K, V> grand, Node<K, V> parent, Node<K, V> child) {
+    private void afterRotate(Node<K, V> grand, Node<K, V> parent, Node<K, V> child) {
         // 更新父节点
         // 让 parent成为子树的根节点
         parent.parent = grand.parent;
