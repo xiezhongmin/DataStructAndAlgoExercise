@@ -28,6 +28,7 @@ public class HashMap<K, V> implements Map<K, V> {
     private static final boolean RED = false;
     private static final boolean BLACK = true;
     private static final int DEFAULT_CAPACITY = 1 << 4;
+    private static final float DEFAULT_LOAD_FACTOR = 0.75f; // 装填因子
 
     public HashMap() {
         this(DEFAULT_CAPACITY);
@@ -112,8 +113,8 @@ public class HashMap<K, V> implements Map<K, V> {
 
     @Override
     public V put(K key, V value) {
-        // 允许空值
-        // keyNotNullCheck(key);
+        // 检查容量是否需要扩容
+        resize();
 
         int index = index(key);
         Node<K, V> root = table[index];
@@ -121,7 +122,7 @@ public class HashMap<K, V> implements Map<K, V> {
             root = new Node(key, value, null);
             table[index] = root;
             size++;
-            putAfter(root);
+            fixPutAfter(root);
             return null;
         }
 
@@ -196,7 +197,7 @@ public class HashMap<K, V> implements Map<K, V> {
 
         size++;
 
-        putAfter(newNode);
+        fixPutAfter(newNode);
 
         return null;
     }
@@ -298,6 +299,100 @@ public class HashMap<K, V> implements Map<K, V> {
         }
     }
 
+    private void resize() {
+        // 装填因子 <= 0.75
+        if (size / table.length <= DEFAULT_LOAD_FACTOR ) return;
+
+        Node<K, V>[] oldTable = table;
+        table = new Node[oldTable.length << 1]; // 扩容至原数组的一倍
+        Queue<Node <K, V>> queue = new LinkedList<>();
+        for (int i = 0; i < oldTable.length; i++) {
+            Node<K, V> root = oldTable[i];
+            if (root == null) continue;
+
+            queue.offer(root);
+            while (!queue.isEmpty()) {
+                Node<K, V> node = queue.poll();
+                if (node.left != null) {
+                    queue.offer(node.left);
+                }
+                if (node.right != null) {
+                    queue.offer(node.right);
+                }
+                // 挪动代码得放到最后面
+                moveNode(node);
+            }
+        }
+    }
+
+    private void moveNode(Node<K, V> newNode) {
+        // 重置
+        newNode.parent = null;
+        newNode.left = null;
+        newNode.right = null;
+        red(newNode); // 染红色, 当做新添加的节点
+
+        int index = index(newNode);
+        Node<K, V> root = table[index];
+        if (root == null) { // 首次添加
+            root = newNode;
+            table[index] = root;
+            fixPutAfter(root);
+            return;
+        }
+
+        // 后续添加
+        // 思路步骤：
+        // 1.找到父节点 parent
+        // 2.创建新节点 node
+        // 3.parent.left = node 或者 parent.right = node
+
+        int cmp = 0;
+        Node<K, V> node = root;
+        Node<K, V> parent = root;
+        K k1 = newNode.key;
+        int h1 = newNode.hash;
+        do {
+            parent = node; // 保存父节点
+            K k2 = node.key;
+            int h2 = node.hash;
+
+            // 思路：
+            // 1.先比较哈希值大小
+            // 2.如果哈希值相等，看看是否本身实现Comparable比较接口
+            // 3. 比较内存地址大小
+
+            if (h1 > h2) {
+                cmp = 1;
+            } else if (h1 < h2) {
+                cmp = -1;
+            } else if (k1 != null && k2 != null
+                    && k1.getClass() == k2.getClass()
+                    && k1 instanceof Comparable
+                    && (cmp = ((Comparable) k1).compareTo(k2)) != 0) {
+
+            } else { // 内存地址比较
+                cmp = System.identityHashCode(k1) - System.identityHashCode(k2);
+            }
+
+            if (cmp > 0) { // 如果比父节点大，继续往右边找
+                node = node.right;
+            } else if (cmp < 0) { // 如果比父节点小，继续往左边找
+                node = node.left;
+            }
+        } while (node != null);
+
+        // 看看插入到父节点的哪个位置
+        newNode.parent = parent;
+        if (cmp > 0) {
+            parent.right = newNode; // 大的放右边
+        } else {
+            parent.left = newNode; // 小的放左边
+        }
+
+        fixPutAfter(newNode);
+    }
+
     private V remove(Node<K, V> node) {
         if (node == null) return null;
 
@@ -332,8 +427,8 @@ public class HashMap<K, V> implements Map<K, V> {
                 node.parent.right = replacement;
             }
 
-            // 删除之后的处理
-            removeAfter(node, replacement);
+            // 修复红黑树性质->删除之后的处理
+            fixRemoveAfter(node, replacement);
         } else if (node.parent == null) { // node是叶子节点并且是根节点
             table[index] = null;
 
@@ -347,8 +442,8 @@ public class HashMap<K, V> implements Map<K, V> {
                 node.parent.right = null;
             }
 
-            // 删除之后的处理
-            removeAfter(node, null);
+            // 修复红黑树性质->删除之后的处理
+            fixRemoveAfter(node, null);
         }
 
         return oldValve;
@@ -478,7 +573,7 @@ public class HashMap<K, V> implements Map<K, V> {
     // ---------------------------------------   红黑树相关   ---------------------------------------
 
     // 添加后的修复红黑树性质
-    private void putAfter(Node<K, V> node) {
+    private void fixPutAfter(Node<K, V> node) {
         // 添加思路：
         // 1.添加:(红黑树与4阶B树等价 元素个数满足 1 <= x <= 3) 必定是添加到叶子节点中, 为了尽快满足红黑树性质，新添加的元素默认为红色
         // 2.如果添加的是根节点，直接染黑即可
@@ -519,7 +614,7 @@ public class HashMap<K, V> implements Map<K, V> {
             // 父节点、叔父节点染黑色
             black(parent);
             black(uncle);
-            putAfter(grand);
+            fixPutAfter(grand);
             return;
         }
 
@@ -544,7 +639,7 @@ public class HashMap<K, V> implements Map<K, V> {
     }
 
     // 删除后的修复红黑树性质
-    private void removeAfter(Node<K, V> node, Node<K, V> replacement) {
+    private void fixRemoveAfter(Node<K, V> node, Node<K, V> replacement) {
         // 删除思路：
         // 1.度为2的节点删除不需要处理
         // 2.红色节点删除不需要处理
@@ -604,7 +699,7 @@ public class HashMap<K, V> implements Map<K, V> {
                 black(parent);
                 red(sibling);
                 if (parentBlack) { // 如果 parent 是黑色(会导致 parent 也下溢)
-                    removeAfter(parent, null); // 这时只需要把 parent 当做被删除的节点处理即可
+                    fixRemoveAfter(parent, null); // 这时只需要把 parent 当做被删除的节点处理即可
                 }
             } else { // 有红色子节点
                 if (isBlack(sibling.right)) {
@@ -634,7 +729,7 @@ public class HashMap<K, V> implements Map<K, V> {
                 black(parent);
                 red(sibling);
                 if (parentBlack) { // 如果 parent 是黑色(会导致 parent 也下溢)
-                    removeAfter(parent, null); // 这时只需要把 parent 当做被删除的节点处理即可
+                    fixRemoveAfter(parent, null); // 这时只需要把 parent 当做被删除的节点处理即可
                 }
             } else { // 有红色子节点
                 if (isBlack(sibling.left)) {

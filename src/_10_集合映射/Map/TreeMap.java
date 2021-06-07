@@ -88,7 +88,7 @@ public class TreeMap<K, V> implements Map<K, V> {
         if (root == null) { // 首次添加
             root = new Node(key, value, null);
             size++;
-            putAfter(root);
+            fixPutAfter(root);
             return null;
         }
 
@@ -125,7 +125,7 @@ public class TreeMap<K, V> implements Map<K, V> {
 
         size++;
 
-        putAfter(newNode);
+        fixPutAfter(newNode);
 
         return null;
     }
@@ -216,8 +216,8 @@ public class TreeMap<K, V> implements Map<K, V> {
                 node.parent.right = replacement;
             }
 
-            // 删除之后的处理
-            removeAfter(node, replacement);
+            // 修复红黑树性质->删除之后的处理
+            fixRemoveAfter(node, replacement);
         } else if (node.parent == null) { // node是叶子节点并且是根节点
             root = null;
 
@@ -231,8 +231,8 @@ public class TreeMap<K, V> implements Map<K, V> {
                 node.parent.right = null;
             }
 
-            // 删除之后的处理
-            removeAfter(node, null);
+            // 修复红黑树性质->删除之后的处理
+            fixRemoveAfter(node, null);
         }
 
         return oldValve;
@@ -324,7 +324,7 @@ public class TreeMap<K, V> implements Map<K, V> {
     // ---------------------------------------   红黑树相关   ---------------------------------------
 
     // 添加后的修复红黑树性质
-    private void putAfter(Node<K, V> node) {
+    private void fixPutAfter(Node<K, V> node) {
         // 添加思路：
         // 1.添加:(红黑树与4阶B树等价 元素个数满足 1 <= x <= 3) 必定是添加到叶子节点中, 为了尽快满足红黑树性质，新添加的元素默认为红色
         // 2.如果添加的是根节点，直接染黑即可
@@ -365,7 +365,7 @@ public class TreeMap<K, V> implements Map<K, V> {
             // 父节点、叔父节点染黑色
             black(parent);
             black(uncle);
-            putAfter(grand);
+            fixPutAfter(grand);
             return;
         }
 
@@ -390,7 +390,7 @@ public class TreeMap<K, V> implements Map<K, V> {
     }
 
     // 删除后的修复红黑树性质
-    private void removeAfter(Node<K, V> node, Node<K, V> replacement) {
+    private void fixRemoveAfter(Node<K, V> node, Node<K, V> replacement) {
         // 删除思路：
         // 1.度为2的节点删除不需要处理
         // 2.红色节点删除不需要处理
@@ -450,7 +450,7 @@ public class TreeMap<K, V> implements Map<K, V> {
                 black(parent);
                 red(sibling);
                 if (parentBlack) { // 如果 parent 是黑色(会导致 parent 也下溢)
-                    removeAfter(parent, null); // 这时只需要把 parent 当做被删除的节点处理即可
+                    fixRemoveAfter(parent, null); // 这时只需要把 parent 当做被删除的节点处理即可
                 }
             } else { // 有红色子节点
                 if (isBlack(sibling.right)) {
@@ -480,7 +480,7 @@ public class TreeMap<K, V> implements Map<K, V> {
                 black(parent);
                 red(sibling);
                 if (parentBlack) { // 如果 parent 是黑色(会导致 parent 也下溢)
-                    removeAfter(parent, null); // 这时只需要把 parent 当做被删除的节点处理即可
+                    fixRemoveAfter(parent, null); // 这时只需要把 parent 当做被删除的节点处理即可
                 }
             } else { // 有红色子节点
                 if (isBlack(sibling.left)) {
