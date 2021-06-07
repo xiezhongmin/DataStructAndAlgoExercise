@@ -50,7 +50,8 @@ public class HashMap<K, V> implements Map<K, V> {
             this.key = key;
             this.value = value;
             this.parent = parent;
-            this.hash = key == null ? 0 : key.hashCode();
+            int hash = key == null ? 0 : key.hashCode();
+            this.hash = hash ^ (hash >>> 16);
         }
 
         // 是否是叶子节点
@@ -134,13 +135,13 @@ public class HashMap<K, V> implements Map<K, V> {
         Node<K, V> node = root;
         Node<K, V> parent = root;
         K k1 = key;
-        int h1 = k1 == null ? 0 : k1.hashCode();
+        int h1 = hash(k1);
         Node<K, V> result = null;
         boolean searched = false;
         do {
             parent = node; // 保存父节点
             K k2 = node.key;
-            int h2 = k2 == null ? 0 : k2.hashCode();
+            int h2 = node.hash;
 
             // 思路：
             // 1.先比较哈希值大小
@@ -354,15 +355,25 @@ public class HashMap<K, V> implements Map<K, V> {
     }
 
     /**
+     * 返回计算好的 hash
+     *
+     * @param key key
+     * @return hash
+     */
+    private int hash(K key) {
+        if (key == null) return 0;
+        int hash = key.hashCode();
+        return (hash ^ (hash >>> 16));
+    }
+
+    /**
      * 根据key生成对应的索引（在桶数组中的位置）
      *
      * @param key key
      * @return 索引
      */
     private int index(K key) {
-        if (key == null) return 0;
-        int hash = key.hashCode();
-        return (hash ^ (hash >>> 16)) & (table.length - 1);
+        return hash(key) & (table.length - 1);
     }
 
     /**
@@ -372,7 +383,7 @@ public class HashMap<K, V> implements Map<K, V> {
      * @return 索引
      */
     private int index(Node<K, V> node) {
-        return (node.hash ^ (node.hash >>> 16)) & (table.length - 1);
+        return node.hash & (table.length - 1);
     }
 
     private Node<K, V> node(K key) {
@@ -389,11 +400,11 @@ public class HashMap<K, V> implements Map<K, V> {
 
         int cmp = 0;
         K k1 = key;
-        int h1 = k1 == null ? 0 : k1.hashCode();
+        int h1 = hash(k1);
         Node<K, V> result = null;
         while (node != null) {
             K k2 = node.key;
-            int h2 = k2 == null ? 0 : k2.hashCode();
+            int h2 = node.hash;
 
             if (h1 > h2) {
                 node = node.right;
