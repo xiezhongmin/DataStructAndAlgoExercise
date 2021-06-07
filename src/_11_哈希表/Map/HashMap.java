@@ -176,9 +176,10 @@ public class HashMap<K, V> implements Map<K, V> {
             } else if (cmp < 0) { // 如果比父节点小，继续往左边找
                 node = node.left;
             } else { // 相等
-                node.key = key; // 覆盖
                 V oldValve = node.value; // 保存旧值
+                node.key = key; // 覆盖
                 node.value = value; // 覆盖
+                node.hash = h1; // 重新计算hash
                 return oldValve;
             }
         } while (node != null);
@@ -305,12 +306,13 @@ public class HashMap<K, V> implements Map<K, V> {
         // 1.先处理删除度为2的节点
         if (node.hasTwoChildren()) {
             // 2.找到它的前驱节点或者后继结点
-            Node<K, V> p = successor(node);
+            Node<K, V> s = successor(node);
             // 3.它的前驱节点或者后继结点的值覆盖当前节点的值
-            node.key = p.key;
-            node.value = p.value;
+            node.key = s.key;
+            node.value = s.value;
+            node.hash = s.hash; // fix hash值 也需要覆盖
             // 4.保存前驱节点或者后继结点，等待后面删除
-            node = p;
+            node = s;
         }
 
         // 5.来到这里即删除度为0或者度1的节点

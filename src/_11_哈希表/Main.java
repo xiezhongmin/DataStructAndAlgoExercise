@@ -1,19 +1,53 @@
 package _11_哈希表;
 
 import _00_utils.Asserts;
+import _00_utils.TimeUtil;
+import _00_utils.file.FileInfo;
+import _00_utils.file.Files;
 import _11_哈希表.Map.HashMap;
-import _11_哈希表.Map.Map;
 
 public class Main {
     public static void main(String[] args) {
-        testHashMap1(new HashMap<>());
-        System.out.println("----------------------------- 方法分割线 -----------------------------");
-        testHashMap2(new HashMap<>());
-        System.out.println("----------------------------- 方法分割线 -----------------------------");
-        testHashMap3(new HashMap<>());
+        testMap1(new HashMap<>());
+        testMap2(new HashMap<>());
+        testMap3(new HashMap<>());
+        testMap4(new HashMap<>());
+        testMap5(new HashMap<>());
     }
 
-    static void testHashMap1(HashMap<Object, Integer> map) {
+    static void testMap1(HashMap<Object, Integer> map) {
+        String filepath = "../";
+        String[] extensions = new String[]{"java", "h", "m", "swift", "c"};
+        FileInfo fileInfo = Files.read(filepath, extensions);
+        String[] words = fileInfo.words();
+
+        System.out.println("总行数：" + fileInfo.getLines());
+        System.out.println("单词总数：" + words.length);
+        System.out.println("-------------------------------------");
+
+        TimeUtil.check(map.getClass().getName(), new TimeUtil.Task() {
+            @Override
+            public void execute() {
+                for (String word : words) {
+                    Integer count = map.get(word);
+                    count = count == null ? 0 : count;
+                    map.put(word, count + 1);
+                }
+                System.out.println(map.size()); // 17188
+
+                int count = 0;
+                for (String word : words) {
+                    Integer i = map.get(word);
+                    count += i == null ? 0 : i;
+                    map.remove(word);
+                }
+                Asserts.test(count == words.length);
+                Asserts.test(map.size() == 0);
+            }
+        });
+    }
+
+    static void testMap2(HashMap<Object, Integer> map) {
         for (int i = 1; i <= 20; i++) {
             map.put(new Key(i), i);
         }
@@ -27,11 +61,9 @@ public class Main {
         Asserts.test(map.get(new Key(6)) == 11);
         Asserts.test(map.get(new Key(7)) == 12);
         Asserts.test(map.get(new Key(8)) == 8);
-
-        map.print();
     }
 
-    static void testHashMap2(HashMap<Object, Integer> map) {
+    static void testMap3(HashMap<Object, Integer> map) {
         map.put(null, 1); // 1
         map.put(new Object(), 2); // 2
         map.put("jack", 3); // 3
@@ -50,10 +82,9 @@ public class Main {
         Asserts.test(map.containsKey(null));
         Asserts.test(map.containsValue(null));
         Asserts.test(map.containsValue(1) == false);
-        map.print();
     }
 
-    static void testHashMap3(HashMap<Object, Integer> map) {
+    static void testMap4(HashMap<Object, Integer> map) {
         map.put("jack", 1);
         map.put("rose", 2);
         map.put("jim", 3);
@@ -79,14 +110,16 @@ public class Main {
         Asserts.test(map.get(new Key(6)) == null);
         Asserts.test(map.get(new Key(7)) == null);
         Asserts.test(map.get(new Key(8)) == 8);
-        map.traversal(new Map.Visitor<Object, Integer>() {
-            public boolean visit(Object key, Integer value) {
-                System.out.println("key = " + key + " value = " + value);
-                return false;
-            }
-        });
+    }
 
-        map.print();
+    static void testMap5(HashMap<Object, Integer> map) {
+        for (int i = 1; i <= 20; i++) {
+            map.put(new SubKey1(i), i);
+        }
+        map.put(new SubKey2(1), 5);
+        Asserts.test(map.get(new SubKey1(1)) == 5);
+        Asserts.test(map.get(new SubKey2(1)) == 5);
+        Asserts.test(map.size() == 20);
     }
 }
 
@@ -118,4 +151,32 @@ class Key {
         return "" + value;
     }
 
+}
+
+class SubKey1 extends Key {
+    public SubKey1(int value) {
+        super(value);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (obj == null ||
+                (obj.getClass() != SubKey1.class && obj.getClass() != SubKey2.class)) return false;
+        return ((Key)obj).value == value;
+    }
+}
+
+class SubKey2 extends Key {
+    public SubKey2(int value) {
+        super(value);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (obj == null ||
+                (obj.getClass() != SubKey1.class && obj.getClass() != SubKey2.class)) return false;
+        return ((Key)obj).value == value;
+    }
 }
