@@ -4,28 +4,30 @@ import _00_utils.Asserts;
 import _00_utils.TimeUtil;
 import _00_utils.file.FileInfo;
 import _00_utils.file.Files;
+import _10_集合映射.Map.Map;
+import _10_集合映射.Map.TreeMap;
 import _11_哈希表.Map.HashMap;
 
 public class Main {
     public static void main(String[] args) {
-        testMap1(new HashMap<>());
+        String filepath = "../";
+        String[] extensions = new String[]{"java", "h", "m", "swift", "c"};
+        FileInfo fileInfo = Files.read(filepath, extensions);
+        String[] words = fileInfo.words();
+        System.out.println("总行数：" + fileInfo.getLines());
+        System.out.println("单词总数：" + words.length);
+        System.out.println("-------------------------------------");
+
+        testMap1(new HashMap<>(), words);
+        testMap1(new TreeMap<>(), words);
         testMap2(new HashMap<>());
         testMap3(new HashMap<>());
         testMap4(new HashMap<>());
         testMap5(new HashMap<>());
     }
 
-    static void testMap1(HashMap<Object, Integer> map) {
-        String filepath = "../";
-        String[] extensions = new String[]{"java", "h", "m", "swift", "c"};
-        FileInfo fileInfo = Files.read(filepath, extensions);
-        String[] words = fileInfo.words();
-
-        System.out.println("总行数：" + fileInfo.getLines());
-        System.out.println("单词总数：" + words.length);
-        System.out.println("-------------------------------------");
-
-        TimeUtil.check(map.getClass().getName(), new TimeUtil.Task() {
+    static void testMap1(Map<Object, Integer> map, String[] words) {
+        TimeUtil.check(map.getClass().getName() + " 测试性能", new TimeUtil.Task() {
             @Override
             public void execute() {
                 for (String word : words) {
@@ -47,7 +49,7 @@ public class Main {
         });
     }
 
-    static void testMap2(HashMap<Object, Integer> map) {
+    static void testMap2(Map<Object, Integer> map) {
         for (int i = 1; i <= 20; i++) {
             map.put(new Key(i), i);
         }
@@ -63,7 +65,7 @@ public class Main {
         Asserts.test(map.get(new Key(8)) == 8);
     }
 
-    static void testMap3(HashMap<Object, Integer> map) {
+    static void testMap3(Map<Object, Integer> map) {
         map.put(null, 1); // 1
         map.put(new Object(), 2); // 2
         map.put("jack", 3); // 3
@@ -84,7 +86,7 @@ public class Main {
         Asserts.test(map.containsValue(1) == false);
     }
 
-    static void testMap4(HashMap<Object, Integer> map) {
+    static void testMap4(Map<Object, Integer> map) {
         map.put("jack", 1);
         map.put("rose", 2);
         map.put("jim", 3);
@@ -112,7 +114,7 @@ public class Main {
         Asserts.test(map.get(new Key(8)) == 8);
     }
 
-    static void testMap5(HashMap<Object, Integer> map) {
+    static void testMap5(Map<Object, Integer> map) {
         for (int i = 1; i <= 20; i++) {
             map.put(new SubKey1(i), i);
         }
