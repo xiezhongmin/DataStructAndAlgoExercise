@@ -22,6 +22,9 @@ import java.util.Queue;
  *  4.哈希冲突，不一定hashCode()相等, 也不一定equals相等
  */
 
+/**
+ * 遍历时无序
+ */
 public class HashMap<K, V> implements Map<K, V> {
     private int size;
     private Node<K, V> table[];
@@ -38,7 +41,7 @@ public class HashMap<K, V> implements Map<K, V> {
         table = new Node[capacity];
     }
 
-    private static class Node<K, V> {
+    protected static class Node<K, V> {
         K key;
         V value;
         int hash;
@@ -119,7 +122,7 @@ public class HashMap<K, V> implements Map<K, V> {
         int index = index(key);
         Node<K, V> root = table[index];
         if (root == null) { // 首次添加
-            root = new Node(key, value, null);
+            root = createNode(key, value, null);
             table[index] = root;
             size++;
             fixPutAfter(root);
@@ -188,7 +191,7 @@ public class HashMap<K, V> implements Map<K, V> {
         } while (node != null);
 
         // 看看插入到父节点的哪个位置
-        Node<K, V> newNode = new Node(key, value, parent);
+        Node<K, V> newNode = createNode(key, value, parent);
         if (cmp > 0) {
             parent.right = newNode; // 大的放右边
         } else {
@@ -299,6 +302,12 @@ public class HashMap<K, V> implements Map<K, V> {
         }
     }
 
+    protected Node<K, V> createNode(K key, V value, Node<K, V> parent) {
+        return new Node<>(key, value, parent);
+    }
+
+    protected void removeAfter(Node<K, V> willNode, Node<K, V> removeNode) { }
+
     private void resize() {
         // 装填因子 <= 0.75
         if (size / table.length <= DEFAULT_LOAD_FACTOR ) return;
@@ -396,6 +405,8 @@ public class HashMap<K, V> implements Map<K, V> {
     private V remove(Node<K, V> node) {
         if (node == null) return null;
 
+        Node<K, V> willNode = node;
+
         V oldValve = node.value;
 
         size--;
@@ -445,6 +456,9 @@ public class HashMap<K, V> implements Map<K, V> {
             // 修复红黑树性质->删除之后的处理
             fixRemoveAfter(node, null);
         }
+
+        // 删除后处理
+        removeAfter(willNode, node);
 
         return oldValve;
     }

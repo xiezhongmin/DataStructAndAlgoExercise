@@ -7,6 +7,7 @@ import _00_utils.file.Files;
 import _10_集合映射.Map.Map;
 import _10_集合映射.Map.TreeMap;
 import _11_哈希表.Map.HashMap;
+import _11_哈希表.Map.LinkedHashMap;
 
 public class Main {
     public static void main(String[] args) {
@@ -20,10 +21,17 @@ public class Main {
 
         testMap1(new HashMap<>(), words);
         testMap1(new TreeMap<>(), words);
+        testMap1(new LinkedHashMap<>(), words);
+
         testMap2(new HashMap<>());
         testMap3(new HashMap<>());
         testMap4(new HashMap<>());
         testMap5(new HashMap<>());
+
+        testMap2(new LinkedHashMap<>());
+        testMap3(new LinkedHashMap<>());
+        testMap4(new LinkedHashMap<>());
+        testMap5(new LinkedHashMap<>());
     }
 
     static void testMap1(Map<Object, Integer> map, String[] words) {
@@ -112,6 +120,16 @@ public class Main {
         Asserts.test(map.get(new Key(6)) == null);
         Asserts.test(map.get(new Key(7)) == null);
         Asserts.test(map.get(new Key(8)) == 8);
+
+        if (map.getClass() == LinkedHashMap.class) {
+            map.traversal(new Map.Visitor<Object, Integer>() {
+                @Override
+                public boolean visit(Object key, Integer value) {
+                    System.out.println("key: " + key + " value: " + value);
+                    return false;
+                }
+            });
+        }
     }
 
     static void testMap5(Map<Object, Integer> map) {

@@ -1,13 +1,14 @@
-package _10_集合映射.Set;
+package _11_哈希表.Set;
 
 import _10_集合映射.Map.Map;
-import _10_集合映射.Map.TreeMap;
+import _10_集合映射.Set.Set;
+import _11_哈希表.Map.HashMap;
 
 /**
- * 遍历时按照比较 -> 从小到大的顺序
+ * 遍历时无序
  */
-public class TreeSet<E> implements Set<E> {
-    TreeMap<E, Object> map = new TreeMap<>();
+public class HashSet<E> implements Set<E> {
+    HashMap<E, Object> map = new HashMap<>();
 
     @Override
     public int size() {

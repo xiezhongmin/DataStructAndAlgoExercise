@@ -4,6 +4,9 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.Queue;
 
+/**
+ * 遍历时按照比较 -> 从小到大的顺序
+ */
 public class TreeMap<K, V> implements Map<K, V> {
     private int size;
     private Node<K, V> root;
