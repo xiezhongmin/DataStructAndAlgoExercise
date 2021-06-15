@@ -114,7 +114,7 @@ public class ArrayList <E> {
 	}
 	
 	// 保证要有capacity的容量
-	public void ensureCapacity(int capacity) {
+	private void ensureCapacity(int capacity) {
 		int oldCapacity = elements.length;
 		// 空间足够不需要扩容
 		if (oldCapacity >= capacity) return;
@@ -131,24 +131,24 @@ public class ArrayList <E> {
 	}
 	
 	// 超出边界处理
-	public void outOfBounds(int index) {
+	private void outOfBounds(int index) {
 		throw new IndexOutOfBoundsException("Index:" + index + ", size:" + size);
 	}
 	
 	// 边界检查
-	public void rangeCheck(int index) {
+	private void rangeCheck(int index) {
 		if (index < 0 || index >= size) {
 			outOfBounds(index);
 		}
 	}
 	
 	// 添加元素边界检查
-	public void rangeCheckForAdd(int index) {
+	private void rangeCheckForAdd(int index) {
 		if (index < 0 || index > size) {
 			outOfBounds(index);
 		}
 	}
-	
+
 	@Override
 	public String toString() {
 		// size=3, [99, 88, 77]
@@ -158,7 +158,7 @@ public class ArrayList <E> {
 			if (i != 0) {
 				string.append(", ");
 			}
-			
+
 			string.append(elements[i]);
 		}
 		string.append("]");
