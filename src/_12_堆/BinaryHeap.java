@@ -1,20 +1,39 @@
 package _12_堆;
 
 import _00_utils.printer.BinaryTreeInfo;
-
 import java.util.Comparator;
 
 public class BinaryHeap<E> extends AbstractHeap<E> implements BinaryTreeInfo {
     private E[] elements;
     private static final int DEFAULT_CAPACITY = 10;
 
-    BinaryHeap(Comparator<E> comparator) {
+    BinaryHeap(E[] elements, Comparator<E> comparator) {
         super(comparator);
-        elements = (E[]) new Object[DEFAULT_CAPACITY];
+
+        if (elements == null || elements.length == 0) {
+            this.elements = (E[]) new Object[DEFAULT_CAPACITY];
+        } else {
+            // 批量建堆
+            int capacity = Math.max(elements.length, DEFAULT_CAPACITY);
+            this.elements = (E[]) new Object[capacity];
+            this.size = elements.length;
+            for (int i = 0; i < elements.length; i++) {
+                this.elements[i] = elements[i];
+            }
+            heapify();
+        }
+    }
+
+    BinaryHeap(Comparator<E> comparator) {
+        this(null, comparator);
+    }
+
+    BinaryHeap(E[] elements) {
+        this(elements, null);
     }
 
     BinaryHeap() {
-        this(null);
+        this(null, null);
     }
 
     @Override
@@ -75,7 +94,8 @@ public class BinaryHeap<E> extends AbstractHeap<E> implements BinaryTreeInfo {
             top = elements[0];
             elements[0] = element;
             siftDown(0);
-        };
+        }
+        ;
 
         return top;
     }
@@ -134,7 +154,7 @@ public class BinaryHeap<E> extends AbstractHeap<E> implements BinaryTreeInfo {
             int rightIndex = childIndex + 1;
             // 选出左右子节点最大的那个
             if (rightIndex < size && compare(elements[rightIndex], child) > 0) {
-                child = elements[rightIndex];
+                child = elements[childIndex = rightIndex];
             }
 
             // 如果element大, 则不需要下滤 退出循环
@@ -147,6 +167,24 @@ public class BinaryHeap<E> extends AbstractHeap<E> implements BinaryTreeInfo {
         }
         // 优化后 只需要最终确定element的位置并赋值
         elements[index] = element;
+    }
+
+    /**
+     * 批量建堆
+     */
+    private void heapify() {
+        // 批量建堆，有两种方式：
+
+        // 1.自上而下的上滤（类比添加， 效率相对较低）
+        // for (int i = 1; i < size; i++) {
+        //    siftUp(i);
+        // }
+
+        // 2.自下而上的下滤（类比删除，效率相对要高）
+        // (size >> 1) - 1 = 叶子节点的前一个非叶子节点
+        for (int i = (size >> 1) - 1; i >= 0; i--) {
+            siftDown(i);
+        }
     }
 
     // 保证要有capacity的容量
