@@ -59,7 +59,25 @@ public class BinaryHeap<E> extends AbstractHeap<E> implements BinaryTreeInfo {
 
     @Override
     public E replace(E element) {
-        return null;
+        elementNotNullCheck(element);
+
+        // 1.判断size是否为0(数组为空)
+        // 2.如果数组为空，直接添加
+        // 3.如果数组不为空:
+        //   - 1.取出第一个节点
+        //   - 2.数组第一个节点位置替换为element
+        //   - 3.下滤操作
+
+        E top = null;
+        if (size == 0) {
+            elements[size++] = element;
+        } else {
+            top = elements[0];
+            elements[0] = element;
+            siftDown(0);
+        };
+
+        return top;
     }
 
     /**
