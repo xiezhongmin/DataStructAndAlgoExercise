@@ -3,6 +3,7 @@ package _12_堆;
 import _00_utils.printer.BinaryTrees;
 
 import java.util.Comparator;
+import java.util.Stack;
 
 public class Main {
     public static void main(String[] args) {
@@ -11,6 +12,8 @@ public class Main {
         test2();
         System.out.println("----------------------------- 方法分割线 -----------------------------");
         test3();
+        System.out.println("----------------------------- 方法分割线 -----------------------------");
+        test4();
     }
 
     static void test1() {
@@ -63,5 +66,25 @@ public class Main {
         }
 
         BinaryTrees.println(heap);
+    }
+
+    static void test4() {
+        // 使用堆排序将一个无序数组转换成一个升序数组
+
+        Integer[] data = {51, 30, 39, 92, 74, 25, 16, 93,
+                91, 19, 54, 47, 73, 62, 76, 63, 35, 18,
+                90, 6, 65, 49, 3, 26, 61, 21, 48};
+        BinaryHeap<Integer> heap = new BinaryHeap<>(data);
+
+        Stack<Integer> stack = new Stack<>();
+
+        while (!heap.isEmpty()) {
+            stack.push(heap.remove());
+        }
+
+        while (!stack.isEmpty()) {
+            System.out.println(stack.pop());
+        }
+
     }
 }
