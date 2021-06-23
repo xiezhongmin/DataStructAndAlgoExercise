@@ -1,13 +1,14 @@
 package _12_堆;
 
 import _00_utils.printer.BinaryTreeInfo;
+
 import java.util.Comparator;
 
 public class BinaryHeap<E> extends AbstractHeap<E> implements BinaryTreeInfo {
     private E[] elements;
     private static final int DEFAULT_CAPACITY = 10;
 
-    BinaryHeap(E[] elements, Comparator<E> comparator) {
+    public BinaryHeap(E[] elements, Comparator<E> comparator) {
         super(comparator);
 
         if (elements == null || elements.length == 0) {
@@ -24,15 +25,15 @@ public class BinaryHeap<E> extends AbstractHeap<E> implements BinaryTreeInfo {
         }
     }
 
-    BinaryHeap(Comparator<E> comparator) {
+    public BinaryHeap(Comparator<E> comparator) {
         this(null, comparator);
     }
 
-    BinaryHeap(E[] elements) {
+    public BinaryHeap(E[] elements) {
         this(elements, null);
     }
 
-    BinaryHeap() {
+    public BinaryHeap() {
         this(null, null);
     }
 
