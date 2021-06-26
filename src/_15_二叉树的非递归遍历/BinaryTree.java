@@ -1,8 +1,10 @@
-package _07_二叉搜索树重构;
+package _15_二叉树的非递归遍历;
 
 import _00_utils.printer.BinaryTreeInfo;
+
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Stack;
 
 public class BinaryTree<E> implements BinaryTreeInfo {
     protected int size;
@@ -28,7 +30,7 @@ public class BinaryTree<E> implements BinaryTreeInfo {
         boolean stop;
 
         /**
-         * @param element
+         * @param element element
          * @return 如果返回true，就代表停止遍历
          */
         public abstract boolean visit(E element);
@@ -49,50 +51,95 @@ public class BinaryTree<E> implements BinaryTreeInfo {
     // 3.后序遍历（Postorder Traversal)   顺序：后序遍历左子树、后序遍历右子树、根节
     // 4.层序遍历（Level Order Traversal) 顺序：从上到下、从左到右依次访问每一个节点
 
-    // ----------------------------------- 递归 -----------------------------------
+    // ----------------------------------- 非递归 -----------------------------------
 
-    // 1.前序遍历（Preorder Traversal)
+    // 1.前序遍历（Preorder Traversal) 方法一
     public void preorder(Visitor<E> visitor) {
-        if (visitor == null) return;
-        preorder(root, visitor);
+        if (root == null || visitor == null) return;
+
+        Node<E>node = root;
+        Stack<Node<E>> stack = new Stack<>();
+
+        while (true) {
+            if (node != null) {
+                if (visitor.visit(node.element)) return;
+                if (node.right != null) {
+                    stack.push(node.right);
+                }
+                node = node.left; // 向左走
+            } else if (stack.isEmpty()) {
+                return;
+            } else {
+                node = stack.pop();
+            }
+        }
     }
 
-    public void preorder(Node<E> node, Visitor<E> visitor) {
-        if (node == null || visitor.stop) return;
+    // 1.前序遍历（Preorder Traversal) 方法二
+    public void preorder2(Visitor<E> visitor) {
+        if (root == null || visitor == null) return;
 
-        visitor.stop = visitor.visit(node.element);
-        preorder(node.left, visitor);
-        preorder(node.right, visitor);
+        Stack<Node<E>> stack = new Stack<>();
+        stack.push(root);
+
+        while (!stack.isEmpty()) {
+            Node<E> node = stack.pop();
+            if (visitor.visit(node.element)) return;;
+
+            if (node.right != null) {
+                stack.push(node.right);
+            }
+            if (node.left != null) {
+                stack.push(node.left);
+            }
+        }
+
     }
 
     // 2.中序遍历（Inorder Traversal)
     public void inorder(Visitor<E> visitor) {
-        if (visitor == null) return;
-        inorder(root, visitor);
-    }
+        if (root == null || visitor == null) return;
 
-    public void inorder(Node<E> node, Visitor<E> visitor) {
-        if (node == null || visitor.stop) return;
+        Node<E> node = root;
+        Stack<Node<E>> stack = new Stack<>();
 
-        inorder(node.left, visitor);
-        if (visitor.stop) return;
-        visitor.stop = visitor.visit(node.element);
-        inorder(node.right, visitor);
+        while (true) {
+            if (node != null) {
+                stack.push(node);
+                node = node.left; // 向左走
+            } else if (stack.isEmpty()) {
+                return;
+            } else {
+                node = stack.pop();
+                if (visitor.visit(node.element)) return;;
+                node = node.right; // 让右节点进行中序遍历
+            }
+        }
+
     }
 
     // 3.后序遍历（Postorder Traversal)
     public void postorder(Visitor<E> visitor) {
-        if (visitor == null) return;
-        postorder(root, visitor);
-    }
+        if (root == null || visitor == null) return;
 
-    public void postorder(Node<E> node, Visitor<E> visitor) {
-        if (node == null || visitor.stop) return;
+        Node<E> prev = null; // 记录上一次弹出访问的节点
+        Stack<Node<E>> stack = new Stack<>();
+        stack.push(root);
 
-        postorder(node.left, visitor);
-        postorder(node.right, visitor);
-        if (visitor.stop) return;
-        visitor.stop = visitor.visit(node.element);
+        while (!stack.isEmpty()) {
+            Node<E> top = stack.peek();
+            if (top.isLeaf() || (prev != null && top == prev.parent)) {
+                prev = stack.pop();
+                if (visitor.visit(prev.element)) return;;
+            } else {
+                if (top.right != null) {
+                    stack.push(top.right);
+                }
+                if (top.left != null) {
+                    stack.push(top.left);
+                }
+            }
+        }
     }
 
     // 4.层序遍历（Level Order Traversal)

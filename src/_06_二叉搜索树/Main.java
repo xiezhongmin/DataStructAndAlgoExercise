@@ -73,10 +73,6 @@ public class Main {
 
         System.out.println("-------------------- 此处是方法分割线 --------------------");
 
-        bst.preorder();
-
-        System.out.println();
-
         bst.preorder(new BinarySearchTree.Visitor<Integer>() {
             public boolean visit(Integer element) {
                 System.out.print(element + " ");
@@ -86,20 +82,12 @@ public class Main {
 
         System.out.println();
 
-        bst.inorder();
-
-        System.out.println();
-
         bst.inorder(new BinarySearchTree.Visitor<Integer>() {
             public boolean visit(Integer element) {
                 System.out.print(element + " ");
                 return false;
             }
         });
-
-        System.out.println();
-
-        bst.postorder();
 
         System.out.println();
 
@@ -115,7 +103,7 @@ public class Main {
         bst.levelOrder(new BinarySearchTree.Visitor<Integer>() {
             public boolean visit(Integer element) {
                 System.out.print(element + " ");
-                return element == 9;
+                return false;
             }
         });
 
