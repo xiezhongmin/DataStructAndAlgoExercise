@@ -1,5 +1,9 @@
 package _16_排序.Sort;
 
+/**
+ * 堆排序
+ * @param <T>
+ */
 public class HeapSort<T extends Comparable<T>> extends Sort<T> {
     private int heapSize;
 

@@ -1,5 +1,9 @@
 package _16_排序.Sort;
 
+/**
+ * 冒泡排序
+ * @param <T>
+ */
 public class BubbleSort1<T extends Comparable<T>> extends Sort<T> {
 
     @Override

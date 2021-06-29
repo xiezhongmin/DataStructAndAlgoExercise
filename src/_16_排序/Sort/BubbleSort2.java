@@ -1,5 +1,9 @@
 package _16_排序.Sort;
 
+/**
+ * 冒泡排序优化1：已经是有序的数组就退出扫描
+ * @param <T>
+ */
 public class BubbleSort2<T extends Comparable<T>> extends Sort<T> {
 
     @Override

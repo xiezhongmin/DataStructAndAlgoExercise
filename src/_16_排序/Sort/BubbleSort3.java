@@ -1,5 +1,9 @@
 package _16_排序.Sort;
 
+/**
+ * 冒泡排序优化2：记录尾部已排好序的index位置, 扫描时忽略尾部已排好序的部分
+ * @param <T>
+ */
 public class BubbleSort3<T extends Comparable<T>> extends Sort<T> {
 
     @Override

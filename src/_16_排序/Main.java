@@ -13,7 +13,10 @@ public class Main {
                 new BubbleSort2(),
                 new BubbleSort3(),
                 new SelectionSort(),
-                new HeapSort());
+                new HeapSort(),
+                new InsertionSort1(),
+                new InsertionSort2(),
+                new InsertionSort3());
     }
 
     static void testSorts(Integer[] array, Sort... sorts) {

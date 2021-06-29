@@ -1,5 +1,9 @@
 package _16_排序.Sort;
 
+/**
+ * 选择排序
+ * @param <T>
+ */
 public class SelectionSort<T extends Comparable<T>> extends Sort<T> {
     @Override
     protected void sort() {
