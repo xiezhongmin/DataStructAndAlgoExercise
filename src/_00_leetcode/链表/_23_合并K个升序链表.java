@@ -19,7 +19,12 @@ package _00_leetcode.链表;
  */
 public class _23_合并K个升序链表 {
 
-    public static ListNode mergeKLists(ListNode[] lists) {
+    /**
+     * 思路：顺序合并
+     * 执行用时：121 ms, 在所有 Java 提交中击败了 24.90% 的用户
+     * 内存消耗：39.8 MB, 在所有 Java 提交中击败了 86.64% 的用户
+     */
+    public static ListNode mergeKLists1(ListNode[] lists) {
         if (lists == null || lists.length == 0) return null;
 
         ListNode left = lists[0];
@@ -52,12 +57,29 @@ public class _23_合并K个升序链表 {
         return dummyHead.next;
     }
 
+    /**
+     * 思路：利用归并合并思路
+     * 执行用时： 2ms, 在所有 Java 提交中击败了 85.93% 的用户
+     * 内存消耗： 40.2MB, 在所有 Java 提交中击败了 53.94% 的用户
+     */
+    public static ListNode mergeKLists2(ListNode[] lists) {
+        return merge(lists, 0, lists.length);
+    }
+
+    public static ListNode merge(ListNode[] lists, int begin, int end) {
+        if (end == begin) return null;
+        if (end - begin == 1) return lists[begin];
+
+        int mid = (begin + end) >> 1;
+        return mergeTwoLists(merge(lists, begin, mid), merge(lists, mid, end));
+    }
+
     public static void main(String[] args) {
         ListNode listNode1 = ListNode.createListNode(new int[]{1, 4, 5});
         ListNode listNode2 = ListNode.createListNode(new int[]{1, 3, 4});
         ListNode listNode3 = ListNode.createListNode(new int[]{2, 6});
 
-        ListNode mergeNode = mergeKLists(new ListNode[]{listNode1, listNode2, listNode3});
+        ListNode mergeNode = mergeKLists2(new ListNode[]{listNode1, listNode2, listNode3});
         ListNode.printList(mergeNode);
     }
 }
