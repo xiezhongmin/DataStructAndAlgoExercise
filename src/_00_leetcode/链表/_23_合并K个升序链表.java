@@ -59,19 +59,19 @@ public class _23_合并K个升序链表 {
 
     /**
      * 思路：利用归并合并思路
-     * 执行用时： 2ms, 在所有 Java 提交中击败了 85.93% 的用户
-     * 内存消耗： 40.2MB, 在所有 Java 提交中击败了 53.94% 的用户
+     * 执行用时： 1ms, 在所有 Java 提交中击败了 100.00% 的用户
+     * 内存消耗： 40.1MB, 在所有 Java 提交中击败了 64.36% 的用户
      */
     public static ListNode mergeKLists2(ListNode[] lists) {
-        return merge(lists, 0, lists.length);
+        return merge(lists, 0, lists.length - 1);
     }
 
     public static ListNode merge(ListNode[] lists, int begin, int end) {
-        if (end == begin) return null;
-        if (end - begin == 1) return lists[begin];
+        if (begin == end) return lists[begin];
+        if (begin > end) return null;
 
         int mid = (begin + end) >> 1;
-        return mergeTwoLists(merge(lists, begin, mid), merge(lists, mid, end));
+        return mergeTwoLists(merge(lists, begin, mid), merge(lists, mid + 1, end));
     }
 
     public static void main(String[] args) {
