@@ -18,6 +18,6 @@ public class _面试题0203_删除中间节点 {
         ListNode node4 = new ListNode(2, node3);
         ListNode node5 = new ListNode(1, node4);
         deleteNode(node3);
-        node5.printList(node5);
+        ListNode.printList(node5);
     }
 }

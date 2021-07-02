@@ -79,6 +79,6 @@ public class _61_旋转链表 {
         ListNode node10 = new ListNode(1, node9);
 
         ListNode head = rotateRight2(node10, 2);
-        head.printList(head);
+        ListNode.printList(head);
     }
 }

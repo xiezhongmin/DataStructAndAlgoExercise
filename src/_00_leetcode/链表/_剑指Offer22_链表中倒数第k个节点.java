@@ -42,6 +42,6 @@ public class _剑指Offer22_链表中倒数第k个节点 {
         ListNode node5 = new ListNode(1, node4);
 
         ListNode head = getKthFromEnd(node5, 2);
-        head.printList(head);
+        ListNode.printList(head);
     }
 }

@@ -13,7 +13,21 @@ public class ListNode {
 
     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
 
-    void printList(ListNode head) {
+    public static ListNode createListNode(int[] array) {
+        if (array == null || array.length == 0) return null;
+
+        ListNode sentinel = new ListNode(0); // 创建哨兵节点
+        sentinel.next = new ListNode(array[0]); // 设置哨兵节点为伪头节点
+        ListNode prev = sentinel; // 创建前继节点为伪头节点
+        for (int i = 0; i < array.length; i++) {
+            prev.next = new ListNode(array[i]);
+            prev = prev.next;
+        }
+
+        return sentinel.next;
+    }
+
+    public static void printList(ListNode head) {
         if (head == null) {
             System.out.println("head is null");
             return;

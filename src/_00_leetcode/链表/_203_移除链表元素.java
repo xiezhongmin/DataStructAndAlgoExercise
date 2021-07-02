@@ -74,6 +74,6 @@ public class _203_移除链表元素 {
         ListNode node6 = new ListNode(1, node5);
         ListNode node7 = new ListNode(6, node6);
         ListNode head = removeElements2(node7, 6);
-        head.printList(head);
+        ListNode.printList(head);
     }
 }

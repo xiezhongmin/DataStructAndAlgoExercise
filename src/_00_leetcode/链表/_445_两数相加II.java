@@ -116,6 +116,6 @@ public class _445_两数相加II {
         ListNode node7 = new ListNode(5, node6);
 
         ListNode head = addTwoNumbers2(node4, node7);
-        head.printList(head);
+        ListNode.printList(head);
     }
 }

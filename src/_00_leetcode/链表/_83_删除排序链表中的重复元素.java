@@ -53,6 +53,6 @@ public class _83_删除排序链表中的重复元素 {
         ListNode node5 = new ListNode(1, node4);
         ListNode node6 = new ListNode(1, node5);
         ListNode head = deleteDuplicates1(node6);
-        head.printList(head);
+        ListNode.printList(head);
     }
 }

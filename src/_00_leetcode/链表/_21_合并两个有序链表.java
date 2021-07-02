@@ -59,6 +59,6 @@ public class _21_合并两个有序链表 {
         ListNode node1 = new ListNode(-9, node2);
 
         ListNode head = mergeTwoLists2(node1, node4);
-        head.printList(head);
+        ListNode.printList(head);
     }
 }

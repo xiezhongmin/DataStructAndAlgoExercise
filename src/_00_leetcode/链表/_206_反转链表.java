@@ -62,6 +62,6 @@ public class _206_反转链表 {
         ListNode node4 = new ListNode(4, node3);
         ListNode node5 = new ListNode(5, node4);
         ListNode head = reverseList2(node5);
-        head.printList(head);
+        ListNode.printList(head);
     }
 }
