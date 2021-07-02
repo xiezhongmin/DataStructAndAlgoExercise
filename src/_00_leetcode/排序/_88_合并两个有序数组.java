@@ -16,13 +16,8 @@ public class _88_合并两个有序数组 {
      * 利用归并排序解法：
      * 执行用时：0 ms, 在所有 Java 提交中击败了 100.00% 的用户
      * 内存消耗：38 MB, 在所有 Java 提交中击败了 98.93% 的用户
-     *
-     * @param nums1 有序数组1
-     * @param m     数组1的元素个数
-     * @param nums2 有序数组2
-     * @param n     数组2的元素个数
      */
-    public static void merge(int[] nums1, int m, int[] nums2, int n) {
+    public static void merge1(int[] nums1, int m, int[] nums2, int n) {
         // 备份左边数据
         int[] left = new int[m];
         for (int i = 0; i < m; i++) {
@@ -30,25 +25,49 @@ public class _88_合并两个有序数组 {
         }
 
         // 扫描比较
-        int li = 0, le = m;
-        int ri = 0, re = n;
-        int ai = 0;
-        while (ri < re) {
-            if (li < le && left[li] < nums2[ri]) {
-                nums1[ai++] = left[li++];
+        int p1 = 0, p2 = 0, cur = 0;
+        while (p1 < m || p2 < n) {
+            if (p1 == m) {
+                nums1[cur++] = nums2[p2++];
+            } else if (p2 == n) {
+                nums1[cur++] = left[p1++];
+            } else if (left[p1] < nums2[p2]) {
+                nums1[cur++] = left[p1++];
             } else {
-                nums1[ai++] = nums2[ri++];
+                nums1[cur++] = nums2[p2++];
             }
         }
-        while (li < le) {
-            nums1[ai++] = left[li++];
+    }
+
+    /**
+     * 利用归并排序解法 + 逆双向指针：
+     * 思路：
+     * 观察可知，nums1的后半部分是空的，可以直接覆盖而不会影响结果。
+     * 因此可以指针设置为从后向前遍历，每次取两者之中的较大者放进 nums1 的最后面。
+     *
+     * 执行用时：0 ms, 在所有 Java 提交中击败了 100.00% 的用户
+     * 内存消耗：38 MB, 在所有 Java 提交中击败了 98.93% 的用户
+     */
+    public static void merge2(int[] nums1, int m, int[] nums2, int n) {
+        // 扫描比较
+        int p1 = m - 1, p2 = n - 1, cur = m + n - 1;
+        while (p1 >= 0 || p2 >= 0) {
+            if (p1 == -1) {
+                nums1[cur--] = nums2[p2--];
+            } else if (p2 == -1) {
+                nums1[cur--] = nums1[p1--];
+            } else if (nums1[p1] > nums2[p2]) {
+                nums1[cur--] = nums1[p1--];
+            } else {
+                nums1[cur--] = nums2[p2--];
+            }
         }
     }
 
     public static void main(String[] args) {
-        int[] array1 = {1, 2, 3, 0, 0, 0};
-        int[] array2 = {2, 5, 6};
-        merge(array1, 3, array2, 3);
+        int[] array1 = {1, 3, 5, 8, 9, 0, 0, 0};
+        int[] array2 = {2, 3, 4};
+        merge2(array1, 5, array2, 3);
         for (int i = 0; i < array1.length; i++) {
             System.out.println(array1[i]);
         }
