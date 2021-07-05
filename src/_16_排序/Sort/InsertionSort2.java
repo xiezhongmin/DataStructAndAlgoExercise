@@ -1,8 +1,8 @@
 package _16_排序.Sort;
 
 /**
- * 插入排序优化1：交换元素改为挪动元素
- * @param <T>
+ * 插入排序优化1：
+ * 交换元素改为挪动元素
  */
 public class InsertionSort2<T extends Comparable<T>> extends Sort<T> {
     @Override

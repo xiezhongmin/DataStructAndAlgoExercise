@@ -1,8 +1,10 @@
 package _16_排序.Sort;
 
 /**
- * 插入排序优化2：利用二分查找发找到待插入的位置
- * @param <T>
+ * 插入排序优化2：
+ * 利用二分查找发找到待插入的位置
+ *
+ * 使用了二分搜索后，只是减少了比较次数，但插入排序的平均时间复杂度依然是 O(n2)
  */
 public class InsertionSort3<T extends Comparable<T>> extends Sort<T> {
     @Override

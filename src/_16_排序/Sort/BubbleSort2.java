@@ -1,8 +1,16 @@
 package _16_排序.Sort;
 
 /**
- * 冒泡排序优化1：已经是有序的数组就退出扫描
- * @param <T>
+ * 冒泡排序优化1：
+ * 已经是有序的数组就退出扫描
+ *
+ * 时间复杂度
+ * 最好 O(n) 最坏 O(n2) 平均 O(n2)
+ *
+ * 空间复杂度
+ * O(1)
+ *
+ * 属于稳定排序
  */
 public class BubbleSort2<T extends Comparable<T>> extends Sort<T> {
 

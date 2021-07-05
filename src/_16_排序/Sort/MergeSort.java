@@ -6,6 +6,14 @@ package _16_排序.Sort;
  *   ✓ 直到不能再分割（序列中只剩1个元素）
  * ② 不断地将2个子序列合并成一个有序序列
  *   ✓ 直到最终只剩下1个有序序列
+ *
+ * 时间复杂度
+ * 由于归并排序总是平均分割子序列，所以最好、最坏、平均都是 O(nlogn)
+ *
+ * 空间复杂度：
+ * O(n)
+ *
+ * 属于稳定排序
  */
 public class MergeSort<T extends Comparable<T>> extends Sort<T> {
     private T[] leftArray;

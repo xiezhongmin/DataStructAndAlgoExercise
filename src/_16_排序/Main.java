@@ -7,17 +7,17 @@ import java.util.Arrays;
 
 public class Main {
     public static void main(String[] args) {
-        Integer[] array = Integers.random(20000, 1000, 100000);
+        Integer[] array = Integers.random(50000, 1, 50000);
         testSorts(array,
-                new BubbleSort1(),
-                new BubbleSort2(),
-                new BubbleSort3(),
-                new SelectionSort(),
+              //  new BubbleSort2(),
+              //  new BubbleSort3(),
+              //  new SelectionSort(),
                 new HeapSort(),
-                new InsertionSort1(),
-                new InsertionSort2(),
+              //  new InsertionSort1(),
+              //  new InsertionSort2(),
                 new InsertionSort3(),
-                new MergeSort());
+                new MergeSort(),
+                new QuickSort());
     }
 
     static void testSorts(Integer[] array, Sort... sorts) {
