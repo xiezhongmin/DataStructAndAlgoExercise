@@ -17,7 +17,8 @@ public class Main {
               //  new InsertionSort2(),
                 new InsertionSort3(),
                 new MergeSort(),
-                new QuickSort());
+                new QuickSort(),
+                new ShellSort());
     }
 
     static void testSorts(Integer[] array, Sort... sorts) {
