@@ -33,7 +33,6 @@ public class RadixSort extends Sort<Integer> {
         for (int divider = 1; divider <= max ; divider *= 10) {
             countingSort(divider);
         }
-
     }
 
     private void countingSort(int divider) {
