@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 public class Main {
     public static void main(String[] args) {
-        Integer[] array = Integers.random(50000, 1, 50000);
+        Integer[] array = Integers.random(50000, 45000, 50000);
         testSorts(array,
               //  new BubbleSort2(),
               //  new BubbleSort3(),
@@ -18,7 +18,8 @@ public class Main {
                 new InsertionSort3(),
                 new MergeSort(),
                 new QuickSort(),
-                new ShellSort());
+                new ShellSort(),
+                new CountingSort());
     }
 
     static void testSorts(Integer[] array, Sort... sorts) {
