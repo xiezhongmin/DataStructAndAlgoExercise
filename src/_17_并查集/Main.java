@@ -7,6 +7,7 @@ public class Main {
     static final int count = 50000;
 
     public static void main(String[] args) {
+        testTime(new QuickUnion_Rank(count));
         testTime(new QuickUnion_Size(count));
         testTime(new QuickFind(count));
         testTime(new QuickUnion(count));
