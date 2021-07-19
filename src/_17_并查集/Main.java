@@ -4,11 +4,12 @@ import _00_utils.Asserts;
 import _00_utils.TimeUtil;
 
 public class Main {
-    static final int count = 10000;
+    static final int count = 50000;
 
     public static void main(String[] args) {
-        testTime(new QuickUnion(count));
+        testTime(new QuickUnion_Size(count));
         testTime(new QuickFind(count));
+        testTime(new QuickUnion(count));
     }
 
     static void testTime(UnionFind uf) {

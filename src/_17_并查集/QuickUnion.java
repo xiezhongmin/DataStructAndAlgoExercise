@@ -22,7 +22,7 @@ public class QuickUnion extends UnionFind {
     }
 
     /**
-     * 将v1的根节点嫁接到v2的根节点上
+     * 将 v1的根节点 嫁接到 v2的根节点 上
      */
     @Override
     public void union(int v1, int v2) {
