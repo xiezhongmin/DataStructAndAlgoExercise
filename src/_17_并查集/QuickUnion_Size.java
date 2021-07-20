@@ -2,6 +2,7 @@ package _17_并查集;
 
 /**
  * 在Union的过程中，可能会出现树不平衡的情况，甚至退化成链表
+ *
  * Quick Union - 基于size的优化: 元素少的树 嫁接到 元素多的树
  */
 public class QuickUnion_Size extends QuickUnion {

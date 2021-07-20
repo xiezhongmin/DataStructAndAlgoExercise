@@ -2,6 +2,7 @@ package _17_并查集;
 
 /**
  * 基于size的优化，也可能会存在树不平衡的问题
+ *
  * Quick Union - 基于rank的优化: 高度矮的树 嫁接到 高度高的树
  */
 public class QuickUnion_Rank extends QuickUnion {
