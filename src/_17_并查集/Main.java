@@ -7,9 +7,10 @@ public class Main {
     static final int count = 500000;
 
     public static void main(String[] args) {
-        testTime(new QuickUnion_Rank_PathCompression(count));
-        testTime(new QuickUnion_Rank(count));
         testTime(new QuickUnion_Size(count));
+        testTime(new QuickUnion_Rank(count));
+        testTime(new QuickUnion_Rank_PC(count));
+        testTime(new QuickUnion_Rank_PS(count));
     }
 
     static void testTime(UnionFind uf) {
